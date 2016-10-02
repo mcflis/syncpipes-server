@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-14/schema#",
+  "description": "Schema for SC loader",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}

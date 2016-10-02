@@ -1,0 +1,449 @@
+{
+  "id": "http://some.site.somewhere/entry-schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema for Jira issue extractor",
+  "type": "object",
+  "properties": {
+    "expand": {
+      "type": "string"
+    },
+    "startAt": {
+      "type": "integer"
+    },
+    "maxResults": {
+      "type": "integer"
+    },
+    "total": {
+      "type": "integer"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "expand": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "self": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object",
+            "properties": {
+              "issuetype": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "iconUrl": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "subtask": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "self",
+                  "id",
+                  "description",
+                  "iconUrl",
+                  "name",
+                  "subtask"
+                ]
+              },
+              "lastViewed": {
+                "type": "null"
+              },
+              "watches": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "watchCount": {
+                    "type": "integer"
+                  },
+                  "isWatching": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "self",
+                  "watchCount",
+                  "isWatching"
+                ]
+              },
+              "components": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self",
+                    "id",
+                    "name",
+                    "description"
+                  ]
+                }
+              },
+              "creator": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "emailAddress": {
+                    "type": "string"
+                  },
+                  "avatarUrls": {
+                    "type": "object",
+                    "properties": {
+                      "48x48": {
+                        "type": "string"
+                      },
+                      "24x24": {
+                        "type": "string"
+                      },
+                      "16x16": {
+                        "type": "string"
+                      },
+                      "32x32": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "48x48",
+                      "24x24",
+                      "16x16",
+                      "32x32"
+                    ]
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "self",
+                  "name",
+                  "emailAddress",
+                  "avatarUrls",
+                  "displayName",
+                  "active"
+                ]
+              },
+              "subtasks": {
+                "type": "array",
+                "items": {}
+              },
+              "timespent": {
+                "type": "null"
+              },
+              "created": {
+                "type": "string"
+              },
+              "project": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "key": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "avatarUrls": {
+                    "type": "object",
+                    "properties": {
+                      "48x48": {
+                        "type": "string"
+                      },
+                      "24x24": {
+                        "type": "string"
+                      },
+                      "16x16": {
+                        "type": "string"
+                      },
+                      "32x32": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "48x48",
+                      "24x24",
+                      "16x16",
+                      "32x32"
+                    ]
+                  }
+                },
+                "required": [
+                  "self",
+                  "id",
+                  "key",
+                  "name",
+                  "avatarUrls"
+                ]
+              },
+              "fixVersions": {
+                "type": "array",
+                "items": {}
+              },
+              "priority": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "iconUrl": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self",
+                  "iconUrl",
+                  "name",
+                  "id"
+                ]
+              },
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "archived": {
+                      "type": "boolean"
+                    },
+                    "released": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "self",
+                    "id",
+                    "description",
+                    "name",
+                    "archived",
+                    "released"
+                  ]
+                }
+              },
+              "votes": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "votes": {
+                    "type": "integer"
+                  },
+                  "hasVoted": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "self",
+                  "votes",
+                  "hasVoted"
+                ]
+              },
+              "assignee": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "emailAddress": {
+                    "type": "string"
+                  },
+                  "avatarUrls": {
+                    "type": "object",
+                    "properties": {
+                      "48x48": {
+                        "type": "string"
+                      },
+                      "24x24": {
+                        "type": "string"
+                      },
+                      "16x16": {
+                        "type": "string"
+                      },
+                      "32x32": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "48x48",
+                      "24x24",
+                      "16x16",
+                      "32x32"
+                    ]
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "self",
+                  "name",
+                  "emailAddress",
+                  "avatarUrls",
+                  "displayName",
+                  "active"
+                ]
+              },
+              "status": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "iconUrl": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "statusCategory": {
+                    "type": "object",
+                    "properties": {
+                      "self": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "key": {
+                        "type": "string"
+                      },
+                      "colorName": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "self",
+                      "id",
+                      "key",
+                      "colorName",
+                      "name"
+                    ]
+                  }
+                },
+                "required": [
+                  "self",
+                  "description",
+                  "iconUrl",
+                  "name",
+                  "id",
+                  "statusCategory"
+                ]
+              }
+            },
+            "required": [
+              "issuetype",
+              "lastViewed",
+              "watches",
+              "components",
+              "creator",
+              "subtasks",
+              "timespent",
+              "created",
+              "project",
+              "fixVersions",
+              "priority",
+              "versions",
+              "votes",
+              "assignee",
+              "status"
+            ]
+          }
+        },
+        "required": [
+          "expand",
+          "id",
+          "self",
+          "key",
+          "fields"
+        ]
+      }
+    }
+  },
+  "required": [
+    "expand",
+    "startAt",
+    "maxResults",
+    "total",
+    "issues"
+  ]
+}

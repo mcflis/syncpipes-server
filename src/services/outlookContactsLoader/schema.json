@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-042/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "GivenName": {
+        "type": "string"
+      },
+      "Surname": {
+        "type": "string"
+      },
+      "JobTitle": {
+        "type": "string"
+      },
+      "Department": {
+        "type": "string"
+      },
+      "CompanyName": {
+        "type": "string"
+      },
+      "EmailAddress1": {
+        "type": "string"
+      },
+      "EmailAddress2": {
+        "type": "string"
+      },
+      "BusinessPhone": {
+        "type": "string"
+      },
+      "MobilePhone": {
+        "type": "string"
+      },
+      "Categories": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "BusinessHomePage": {
+        "type": "string"
+      },
+      "BusinessAddress": {
+        "type": "object",
+        "properties": {
+          "Street": {
+            "type": "string"
+          },
+          "PostalCode": {
+            "type": "string"
+          },
+          "City": {
+            "type": "string"
+          },
+          "State": {
+            "type": "null"
+          },
+          "CountryOrRegion": {
+            "type": "string"
+          }
+        }
+      },
+      "PrivateAddress": {
+        "type": "object",
+        "properties": {
+          "Street": {
+            "type": "string"
+          },
+          "PostalCode": {
+            "type": "string"
+          },
+          "City": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "CountryOrRegion": {
+            "type": "string"
+          }
+        }
+      },
+      "uniqueId": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "name"
+    ]
+  }
+}

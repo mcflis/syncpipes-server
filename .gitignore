@@ -1,0 +1,15 @@
+node_modules/
+public/
+.tmp
+.sass-cache
+.idea
+dist/
+npm-debug.log
+coverage/
+typings/*
+.env
+src/**/*.js
+src/**/*.js.map
+cert/
+docs/dump/
+typings/
