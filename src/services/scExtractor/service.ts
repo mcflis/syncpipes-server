@@ -1,6 +1,7 @@
 import * as stream from 'stream';
 import * as SyncPipes from "./../../app/index";
 import 'node-rest-client';
+//noinspection TypeScriptCheckImport
 import * as sleep from 'sleep';
 
 // config
@@ -289,4 +290,6 @@ export class SocioCortexTypesExtractorService implements SyncPipes.IExtractorSer
 
         });
     }
+
+    updateConfigSchema(inputData:Array<Buffer>) { return null; }
 }

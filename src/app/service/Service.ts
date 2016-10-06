@@ -27,6 +27,7 @@ export enum ExtractorServiceType {Active, Passive}
 export interface IExtractorService extends IService {
     extract(): stream.Readable;
     getType(): ExtractorServiceType;
+    updateConfigSchema(inputData: Array<Buffer>): Promise<any>;
 }
 
 export interface ILoaderService extends IService {

@@ -255,4 +255,6 @@ export class GitHubIssueExtractorService implements SyncPipes.IExtractorService 
             });
         });
     }
+
+    updateConfigSchema(inputData:Array<Buffer>) { return null; }
 }

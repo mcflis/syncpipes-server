@@ -170,4 +170,8 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
             }
         });
     }
+
+    updateConfigSchema(inputData:Array<Buffer>) {
+        return null;
+    }
 }

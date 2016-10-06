@@ -324,7 +324,8 @@ export class GraphTransformer {
                         "foreignKey": mapping.foreignKey
                     });
                 } else {
-                    throw new Error(`Unable to get find leaf by name '${mapping.fromPath}' at path '${mappingNode.getName()}'`);
+                    //ignore if the source leaf node is unavailable
+                    //throw new Error(`Unable to get find leaf by name '${mapping.fromPath}' at path '${mappingNode.getName()}'`);
                 }
             }
         }

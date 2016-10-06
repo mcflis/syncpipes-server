@@ -1,0 +1,7 @@
+{
+  "id": "http://localhost/entry-schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema for Excel extractor",
+  "type": "object",
+  "properties": {}
+}
