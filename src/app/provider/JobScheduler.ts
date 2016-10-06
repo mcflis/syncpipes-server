@@ -44,10 +44,10 @@ export class JobScheduler implements IJobScheduler {
             // connect
             let fs = require('fs');
             let opts = {
-                cert: fs.readFileSync('./cert/cert.pem'),
-                key: fs.readFileSync('./cert/key.pem'),
-                passphrase: 'MySecretPassword',
-                ca: [fs.readFileSync('./cert/cacert.pem')]
+                // cert: fs.readFileSync('./cert/cert.pem'),
+                // key: fs.readFileSync('./cert/key.pem'),
+                // passphrase: 'MySecretPassword',
+                // ca: [fs.readFileSync('./cert/cacert.pem')]
             };
 
             amqp.connect(this.amqpUrl(), opts).then((conn) => {
@@ -148,7 +148,7 @@ export class JobScheduler implements IJobScheduler {
     }
 
     private amqpUrl(): string {
-        let url = 'amqps://';
+        let url = 'amqp://';
         if (this.config.password !== "" && this.config.user != "") {
             url += `${this.config.user}:${this.config.password}@`;
         }
