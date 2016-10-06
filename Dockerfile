@@ -1,4 +1,4 @@
-FROM node:onbuild
+FROM node:latest
 
 MAINTAINER Fridolin Koch <frido.koch@tum.de>
 

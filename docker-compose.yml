@@ -12,22 +12,29 @@ services:
       - rabbit:rabbit
     environment:
       SYNCPIPES_PORT: 3010
+      SYNCPIPES_MONGO_HOST: 'mongo'
       SYNCPIPES_MONGO_URL: 'mongodb://mongo/syncpipes'
       SYNCPIPES_RABBIT_HOST: rabbit
       SYNCPIPES_RABBIT_PORT: 5672
-      SYNCPIPES_RABBIT_USER: syncpipes
-      SYNCPIPES_RABBIT_PASSWORD: p44H3agjpM
+      SYNCPIPES_RABBIT_USER: guest
+      SYNCPIPES_RABBIT_PASSWORD: guest
       SYNCPIPES_RABBIT_VHOST: '/'
   mongo:
     image: mongo:latest
     ports:
       - "27017:27017"
+    command: --auth
   rabbit:
     image: rabbitmq:management
     ports:
+      - "15671:15671"
       - "15672:15672" # management gui
+      - "25672:25672"
+      - "5672:5672"
+      - "5671:5671"
+      - "4369:4369"
     environment:
-      RABBITMQ_DEFAULT_USER: syncpipes
-      RABBITMQ_DEFAULT_PASS: p44H3agjpM
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
 
