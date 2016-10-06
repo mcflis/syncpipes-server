@@ -1,3 +1,4 @@
+//noinspection TypeScriptCheckImport
 import { IKernel as Container } from "inversify";
 import {Response} from 'express';
 
@@ -35,6 +36,7 @@ export abstract class AbstractController {
     }
 
     protected getService<T>(name: string): T {
+        //noinspection TypeScriptUnresolvedFunction
         return this.container.get<T>(name);
     }
 

@@ -1,10 +1,19 @@
-import { Request, Response } from 'express';
+import { Request, Response, RequestHandler } from 'express';
 import { IServiceManager } from "../provider/ServiceManager";
 import { AbstractController, RoutePrefix, Route } from "./Controller";
 import { ServiceConfig, IServiceConfig } from '../model/ServiceConfig'
+import multer = require('multer');
+import {IExtractorService} from "../service/Service";
 
 @RoutePrefix('/services')
 export class ServiceController extends AbstractController {
+    private multer: RequestHandler;
+
+    constructor() {
+        super();
+        // init multer middleware
+        this.multer = <RequestHandler>multer({storage: multer.memoryStorage()}).array('data');
+    }
 
     @Route('/', 'GET')
     index(request:Request, response:Response) {
@@ -79,6 +88,44 @@ export class ServiceController extends AbstractController {
                 }
             }
         });
+    }
+
+    @Route('/:name/updateSchema', 'POST')
+    updateSchema(request:Request, response:Response) {
+        let service = <IExtractorService> this.getService<IServiceManager>('services').get(request.params.name);
+        if (!service) {
+            response.status(404).json({
+                "error": `Service ${request.params.name} is not loaded`
+            });
+        } else {
+            this.multer(request, response, (err) => {
+                if (!err) {
+                    if (!request.is('multipart/form-data') || !request.files) {
+                        response.status(400).json({"error": "no input data provided for passive extractor"});
+                        return
+                    }
+                    // add files to context
+                    let inputData = [];
+
+                    for (let key of Reflect.ownKeys(request.files)) {
+                        if (request.files[key].buffer instanceof Buffer) {
+                            inputData.push(request.files[key].buffer);
+                        }
+                    }
+                    let p = service.updateConfigSchema(inputData);
+                    if(p != null) {
+                        p.then(() => {
+                            response.status(204).json({"message": "OK"});
+                        });
+                    } else {
+                        response.status(204).json({"message": "Contact the developer: Extractor is incorrectly implemented"});
+                    }
+
+                } else {
+                    response.status(400).json(err);
+                }
+            });
+        }
     }
 
     @Route('/:name/configs', 'GET')
@@ -185,6 +232,18 @@ export class ServiceController extends AbstractController {
             }, (err) => {
                 response.status(500).json(err);
             });
+        }
+    }
+
+    @Route('/:name/type', 'GET')
+    getExtractorServiceType(request:Request, response:Response) {
+        let service = <IExtractorService> this.getService<IServiceManager>('services').get(request.params.name);
+        if (!service) {
+            response.status(404).json({
+                "error": `Service ${request.params.name} is not loaded`
+            });
+        } else {
+            response.json({"type": service.getType()});
         }
     }
 }

@@ -2,22 +2,10 @@ import * as stream from 'stream';
 import * as SyncPipes from "../../app/index";
 import * as xlsx from 'xlsx';
 
-interface IRequirement {
-    id: string;
-    name: string;
-    info: string;
-    description: string;
-}
-
-interface ITestCase {
-    id: string;
-    description: string;
-}
-
 /**
  * Extracts Repositories and Issues from a github org
  */
-export class RequirementsExcelExtractorService implements SyncPipes.IExtractorService {
+export class ExcelExtractorService implements SyncPipes.IExtractorService {
 
     /**
      * Execution context
@@ -70,52 +58,40 @@ export class RequirementsExcelExtractorService implements SyncPipes.IExtractorSe
 
 
     extract(): stream.Readable {
-
         // create output stream
         this.stream = new stream.Readable({objectMode: true});
         this.stream._read = () => {
-
             if (this.workbooks.length === 0) {
                 this.stream.push(null);
             } else {
                 let workbook = this.workbooks.pop();
+                let input = {};
                 while (workbook != null) {
-                    let requirements = new Array<IRequirement>();
-                    let tests = new Array<ITestCase>();
-                    // get requirements
-                    let sheet = workbook.Sheets['Requirement'];
-                    let range = xlsx.utils.decode_range(sheet['!ref']);
-                    for (let row = range.s.r+1; row <= range.e.r; ++row) {
-                        requirements.push({
-                            id: sheet[xlsx.utils.encode_cell({c: 0, r: row})] ? sheet[xlsx.utils.encode_cell({c: 0, r: row})].v : null,
-                            name: sheet[xlsx.utils.encode_cell({c: 1, r: row})] ? sheet[xlsx.utils.encode_cell({c: 1, r: row})].v : null,
-                            info: sheet[xlsx.utils.encode_cell({c: 2, r: row})] ? sheet[xlsx.utils.encode_cell({c: 2, r: row})].v : null,
-                            description: sheet[xlsx.utils.encode_cell({c: 3, r: row})] ? sheet[xlsx.utils.encode_cell({c: 3, r: row})].v : null
+                    workbook.SheetNames.forEach((sheetName) => {
+                        let worksheet = workbook.Sheets[sheetName];
+                        let worksheetAsJson = xlsx.utils.sheet_to_json(worksheet);
+
+                        input[sheetName] = [];
+                        worksheetAsJson.forEach((item) => {
+                            let row = {};
+                            for(var k in item) {
+                                row[k] = item[k];
+                            }
+                            input[sheetName].push(row);
                         });
-                    }
-                    // get tests
-                    sheet = workbook.Sheets['TestCases'];
-                    range = xlsx.utils.decode_range(sheet['!ref']);
-                    for (let row = range.s.r+1; row <= range.e.r; ++row) {
-                        tests.push({
-                            id: sheet[xlsx.utils.encode_cell({c: 0, r: row})].v,
-                            description: sheet[xlsx.utils.encode_cell({c: 1, r: row})].v,
-                        });
-                    }
-                    this.stream.push({"requirements": requirements, "test-cases": tests});
-                    // next workbook
-                    workbook = this.workbooks.pop()
+
+                    });
+                    this.stream.push(input);
+                    workbook = this.workbooks.pop();
                 }
+                this.stream.push(null);
             }
-
         };
-
-
         return this.stream;
     }
 
     getName(): string {
-        return 'RequirementsExcelExtractor';
+        return 'ExcelExtractor';
     }
 
     /**
@@ -127,7 +103,7 @@ export class RequirementsExcelExtractorService implements SyncPipes.IExtractorSe
         return null;
     }
 
-    setConfiguration(config: SyncPipes.IServiceConfiguration): void {}
+    setConfiguration(config: SyncPipes.IServiceConfiguration): void {    }
 
     /**
      * Return the schema which can be extracted
@@ -144,9 +120,44 @@ export class RequirementsExcelExtractorService implements SyncPipes.IExtractorSe
      * @param config
      * @returns {Promise<SyncPipes.ISchema>}
      */
-    getConfigSchema(config ): Promise<SyncPipes.ISchema> {
+    getConfigSchema(config): Promise<SyncPipes.ISchema> {
         return new Promise<SyncPipes.ISchema>((resolve, reject) => {
             resolve(this.schema);
+        });
+    }
+
+    updateConfigSchema(inputData:Array<Buffer>): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.workbooks = [];
+            for (let file of inputData) {
+                this.workbooks.push(xlsx.read(file, {"type": "buffer"}));
+            }
+
+            let workbook = this.workbooks.pop();
+            while (workbook != null) {
+                workbook.SheetNames.forEach((sheetName) => {
+                    let worksheet = workbook.Sheets[sheetName];
+                    let worksheetAsJson = xlsx.utils.sheet_to_json(worksheet);
+
+                    let keys = [];
+                    worksheetAsJson.forEach((item) => {
+                        for(var k in item)
+                            if(!keys.includes(k))
+                                keys.push(k);
+                    });
+
+                    let properties = {};
+                    for(let i=0; i<keys.length; i++)
+                        properties[keys[i]] = {"type": "string"};
+
+                    this.schema.toObject().properties[sheetName] = {"type": "array", "items":{"type": "object", "properties":properties}};
+                });
+
+                // next workbook
+                workbook = this.workbooks.pop();
+            }
+
+            resolve();
         });
     }
 }
