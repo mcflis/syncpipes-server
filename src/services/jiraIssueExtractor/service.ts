@@ -64,7 +64,6 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
             //    username: this.config.username,
             //    token: this.config.token
         });
-
         //this.github.authenticate({
         //    type: "oauth",
         //    token: this.config.token
@@ -125,7 +124,8 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
             throw new Error('No output stream available');
         } else {
             Promise.all([this.fetchIssuesForPage(null, [])]).then((issues) => {
-                this.stream.push(issues);
+                this.stream.push({"issues": issues});
+                this.stream.push(null);
             }).catch((err) => {
                 console.error(err);
             });
@@ -145,24 +145,19 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                         issues.push(issue);
                     }
                     var nextPage = _issues.startAt+_issues.maxResults;
-                    console.log(1);
-                    console.log(nextPage);
                     if (next<(_issues.total)){
                         this.fetchIssuesForPage(nextPage, issues);
                     } else {
                         resolve(issues);
                     }
-
                 }
             };
             if (next === null) {
                 this.jira.search.search({
                     jql: 'project=' + this.config.project,
-                    startAt: 0,
+                    startAt: 0
                 }, fnHandle);
             } else {
-                console.log(2);
-                console.log(next);
                 this.jira.search.search({
                     jql: 'project=' + this.config.project,
                     startAt: next,
