@@ -123,9 +123,9 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
         if (this.stream === null) {
             throw new Error('No output stream available');
         } else {
-            Promise.all([this.fetchIssuesForPage(null, [])]).then((issues) => {
+            Promise.all([this.fetchIssuesForPage(0, [])]).then((issues) => {
                 this.stream.push({"issues": issues});
-                this.stream.push(null);
+
             }).catch((err) => {
                 console.error(err);
             });
@@ -133,7 +133,7 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
 
     }
 
-    private fetchIssuesForPage(next: Object = null, issues: Array<any> = []): Promise<any> {
+    private fetchIssuesForPage(next: Number = 0, issues: Array<any> = []): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             let fnHandle = (err, _issues) => {
                 if (err) {
@@ -143,26 +143,25 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                     // manipulate issues an push to stream
                     for (let issue of _issues.issues) {
                         issues.push(issue);
+
                     }
                     var nextPage = _issues.startAt+_issues.maxResults;
-                    if (next<(_issues.total)){
-                        this.fetchIssuesForPage(nextPage, issues);
+                    //TODO: handle the left issues
+                    // if (nextPage<(_issues.total)){
+                    if (nextPage<50){
+
+                       this.fetchIssuesForPage(nextPage, issues);
                     } else {
                         resolve(issues);
                     }
                 }
             };
-            if (next === null) {
-                this.jira.search.search({
-                    jql: 'project=' + this.config.project,
-                    startAt: 0
-                }, fnHandle);
-            } else {
-                this.jira.search.search({
-                    jql: 'project=' + this.config.project,
-                    startAt: next,
-                }, fnHandle);
-            }
+            this.jira.search.search({
+                jql: 'project=' + this.config.project,
+                startAt: next,
+
+            }, fnHandle);
+
         });
     }
 

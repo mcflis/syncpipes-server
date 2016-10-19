@@ -55,6 +55,7 @@ export class GraphTransformer {
         // create graph from input data
 
         let graph = new ObjectGraphNode("_root");
+
         graph.insert(data);
         // target object
         let destObj = GraphTransformer.instantiateStructure(this.targetSchema.toObject(true));
