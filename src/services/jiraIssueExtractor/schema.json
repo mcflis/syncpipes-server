@@ -408,7 +408,9 @@
                   "id",
                   "statusCategory"
                 ]
-              }
+              },
+              "description": { "type": "string" },
+              "summary": { "type": "string" }
             },
             "required": [
               "issuetype",

@@ -105,13 +105,14 @@ export class JobScheduler implements IJobScheduler {
                     if (loaderConfig != null) {
                         loaderConfig.load(context.pipeline.loaderConfig.config);
                         loader.setConfiguration(loaderConfig);
+                        logger.info(`Extractor and logger configured`);
                     }
                     // prepare services
                     Promise.all([
                         extractor.prepare(context, logger),
                         loader.prepare(context, logger)
                     ]).then(() => {
-
+                        logger.info(`Extractor and logger prepared`);
                         // destination stream
                         let loaderStream = loader.load();
                         loaderStream.on('error', (err) => handleError(`Loader stream error: ${err}`));

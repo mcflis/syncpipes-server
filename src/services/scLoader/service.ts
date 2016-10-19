@@ -41,8 +41,6 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      */
     private schema: SyncPipes.ISchema;
 
-    private contactsUrl: string;
-
     constructor() {
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
@@ -181,7 +179,6 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
     prepare(context: SyncPipes.IPipelineContext, logger: SyncPipes.ILogger): Promise<any> {
         this.context = context;
         this.logger = logger;
-        this.contactsUrl = this.config.url + "api/contacts";
         var Client = require('node-rest-client').Client;
         this.client = new Client();
         return this.updateSchema().then( (schema) => {

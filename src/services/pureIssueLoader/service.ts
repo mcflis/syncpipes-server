@@ -105,10 +105,9 @@ export class PureIssueLoaderService implements SyncPipes.ILoaderService {
 
 
     load(): stream.Writable {
-
         this.stream = new stream.Writable({objectMode: true});
         this.stream._write = (chunk, encoding, callback) => {
-            //console.log(`Chunk: ${JSON.stringify(chunk, null, "  ")}`);
+            console.log(`Chunk: ${JSON.stringify(chunk, null, "  ")}`);
 
             this.insertProjects(chunk.projects)
                 .then(() => this.insertIssues(chunk.issues))
@@ -176,7 +175,7 @@ export class PureIssueLoaderService implements SyncPipes.ILoaderService {
                     issue.updated_at || null
                 ]).then(() => {
                     return insertIssue(issues.pop());
-                })
+                });
             });
         };
 
@@ -225,7 +224,7 @@ export class PureIssueLoaderService implements SyncPipes.ILoaderService {
     }
 
     private execQuery(sql: string, bindings: Array<any> = []): Promise<any> {
-        this.logger.debug(`Executing SQL-Query ${sql}`, bindings);
+        //this.logger.debug(`Executing SQL-Query ${sql}`, bindings);
         return new Promise<any>((resolve, reject) => {
             this.connection.query(sql, bindings, function (err, result) {
                 if (err) {

@@ -290,7 +290,6 @@ export class GraphTransformer {
             if (mappingNode.getChildren() !== null) {
                 for (let childMapping of mappingNode.getChildren()) {
                     let subGraph = node.getNodeByPrefix(childMapping.getName());
-
                     let tmp = this.extract(subGraph, childMapping);
                     for (let i = 0; i < tmp.length; i++) {
                         tmp[i] = tmp[i].concat(destObjects);
@@ -304,12 +303,12 @@ export class GraphTransformer {
                 result.push(destObjects);
             }
         }
-
         return result;
     }
 
     extractSingle(node: ObjectGraphNode, mappingNode: MappingTree): Array<IDestinationValue> {
         let destObjects = [];
+
         if (mappingNode.getValue() instanceof Array) {
             for (let mapping of mappingNode.getValue()) {
                 // find leaf in node
