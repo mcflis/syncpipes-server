@@ -76,7 +76,7 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
         this.stream = new stream.Readable({objectMode: true});
         this.stream._read = () => {};
 
-        this.fetchIssuesOfProject();
+        this.fetchIssuesForPage();
 
         return this.stream;
     }
@@ -119,49 +119,56 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
      *
      *
      */
-    private fetchIssuesOfProject(next: Object = null) {
-        if (this.stream === null) {
-            throw new Error('No output stream available');
-        } else {
-            Promise.all([this.fetchIssuesForPage(0, [])]).then((issues) => {
-                this.stream.push({"issues": issues});
+    // private fetchIssuesOfProject(next: Object = null) {
+    //     if (this.stream === null) {
+    //         throw new Error('No output stream available');
+    //     } else {
+    //         this.fetchIssuesForPage(0, []).then((issues) => {
+    //             this.logger.debug(issues.toString(), this.context);
+    //             this.stream.push({"issues": issues});
+    //             return Promise.resolve();
+    //         }).catch((err) => {
+    //             this.logger.error(err, this.context);
+    //         });
+    //     }
+    //
+    // }
 
-            }).catch((err) => {
-                console.error(err);
-            });
-        }
-
-    }
-
-    private fetchIssuesForPage(next: Number = 0, issues: Array<any> = []): Promise<any> {
+    private fetchIssuesForPage(next: Number = 0, maxResults: Number = 50, issues: Array<any> = []): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             let fnHandle = (err, _issues) => {
                 if (err) {
                     reject(err);
                 } else {
 
-                    // manipulate issues an push to stream
-                    for (let issue of _issues.issues) {
-                        issues.push(issue);
-
+                    if (next > _issues.total){
+                        this.stream.push({"issues": issues});
+                        this.stream.push(null);
+                        return;
                     }
-                    var nextPage = _issues.startAt+_issues.maxResults;
-                    //TODO: handle the left issues
-                    // if (nextPage<(_issues.total)){
-                    if (nextPage<50){
-
-                       this.fetchIssuesForPage(nextPage, issues);
-                    } else {
-                        resolve(issues);
+                    else {
+                        let nextPage = _issues.maxResults+_issues.startAt;
+                        // manipulate issues an push to stream
+                        for (let issue of _issues.issues) {
+                            issues.push(issue);
+                        }
+                        this.logger.debug("Total number of issues: "+_issues.total, null);
+                        this.logger.debug("Number of issues per page: "+_issues.maxResults, null);
+                        this.logger.debug("issues : "+nextPage+" : "+issues, null);
+                        maxResults = _issues.total-_issues.startAt < maxResults?_issues.total-_issues.startAt:maxResults
+                        this.fetchIssuesForPage(nextPage, maxResults, issues);
                     }
                 }
             };
-            this.jira.search.search({
-                jql: 'project=' + this.config.project,
-                startAt: next,
-
-            }, fnHandle);
-
+            if (this.stream === null) {
+                throw new Error('No output stream available');
+            } else {
+                this.jira.search.search({
+                    jql: 'project=' + this.config.project,
+                    startAt: next,
+                    maxResults:maxResults
+                }, fnHandle);
+            }
         });
     }
 

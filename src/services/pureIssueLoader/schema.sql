@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `issues` (
 	`project_id` BIGINT UNSIGNED,
 	`number` INT NOT NULL,
 	`title` VARCHAR(512) NOT NULL,
-	`body` TEXT NOT NULL,
+	`body` LONGTEXT,
 	`user` VARCHAR(512) NOT NULL,
 	`state` VARCHAR(512) NOT NULL,
 	`created_at` VARCHAR(512) NOT NULL,
