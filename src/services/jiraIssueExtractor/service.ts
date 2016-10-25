@@ -114,33 +114,12 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
         });
     }
 
-    /**
-     * Fetch issues from specified project
-     *
-     *
-     */
-    // private fetchIssuesOfProject(next: Object = null) {
-    //     if (this.stream === null) {
-    //         throw new Error('No output stream available');
-    //     } else {
-    //         this.fetchIssuesForPage(0, []).then((issues) => {
-    //             this.logger.debug(issues.toString(), this.context);
-    //             this.stream.push({"issues": issues});
-    //             return Promise.resolve();
-    //         }).catch((err) => {
-    //             this.logger.error(err, this.context);
-    //         });
-    //     }
-    //
-    // }
-
     private fetchIssuesForPage(next: Number = 0, maxResults: Number = 50, issues: Array<any> = []): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             let fnHandle = (err, _issues) => {
                 if (err) {
                     reject(err);
                 } else {
-
                     if (next > _issues.total){
                         this.stream.push({"issues": issues});
                         this.stream.push(null);
@@ -148,7 +127,6 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                     }
                     else {
                         let nextPage = _issues.maxResults+_issues.startAt;
-                        // manipulate issues an push to stream
                         for (let issue of _issues.issues) {
                             issues.push(issue);
                         }
