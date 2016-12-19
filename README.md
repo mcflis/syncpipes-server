@@ -24,7 +24,7 @@ You can start the complete application stack using `docker-compose up`
 
 To use access the API either a generic REST-Client like [Postman](https://www.getpostman.com/) or the official SyncPipes client application can be used.
 
-We suggest to use the official Angular.js client application.
+We suggest to use the official Angular.js [client application](https://github.com/sebischair/syncpipes-client).
 
 The complete API documentation can be found in `docs/API.md`
 
