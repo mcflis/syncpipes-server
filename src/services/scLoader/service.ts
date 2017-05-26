@@ -5,6 +5,7 @@ import { readFileSync } from 'fs';
 // config
 import { Configuration } from './Configuration'
 import 'node-rest-client';
+import forEachChild = ts.forEachChild;
 
 /**
  * Load Contacts to Exchange
@@ -20,6 +21,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * Node Rest Client
      */
     private client: any;
+    private args: any;
 
     /**
      * Workflow context
@@ -70,76 +72,76 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * @returns {Promise<SyncPipes.ISchema>}
      */
     getConfigSchema(config): Promise<SyncPipes.ISchema> {
-
         this.setConfiguration(config.config);
-        var Client = require('node-rest-client').Client;
-        this.client = new Client({ user: this.config.username, password: this.config.password });
-        return this.updateSchema();
-
-
+        return new Promise<any> ((resolve) => {
+            this.getToken().then(() => {
+                resolve(this.updateSchema());
+            });
+        });
     }
 
-    updateSchema(): Promise<SyncPipes.ISchema> {
+    private updateSchema(): Promise<SyncPipes.ISchema> {
         return new Promise<SyncPipes.ISchema>((resolve, reject) => {
             this.fetchTypes().then((types) => {
-                for(var i = 0; i < types.length; i++) {
-                    var properties = {};
-                    properties["id"] = {"type": "string", "default": types[i].id};
-                    properties["name"] = {"type": "string"};
-                    properties["href"] = {"type": "string"};
-                    for(var j=0; j<types[i].attributeDefinitions.length; j++) {
-                        //TODO: JSON Schema generation has to be improved according to standard
-                        switch (types[i].attributeDefinitions[j].attributeType) {
-                            case "Number":
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "number"};
-                                break;
-                            case "Link":
-                                // attribute definitions can contain references to system types like Pages
-                                // (then entityType is undefined)
-                                // or to the custom types (then entityType is an object, that contains: id, name, href )
-                                if (types[i].attributeDefinitions[j].options["entityType"] == undefined) {
-                                    properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                                }
-                                else {
-                                    properties[types[i].attributeDefinitions[j].name] = {"type": "string", "href": types[i].attributeDefinitions[j].options.entityType.name };
-                                }
-                                break;
-                            case "Text":
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                                break;
-                            case "Date":
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                                break;
-                            default:
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                        }
-                    }
-                    var required = ["id", "name"];
-                    this.schema.toObject().properties[types[i].name.toString()] = {"type": "array", "items":{"type": "object", "properties":properties, "required": required}};
+                for(let i = 0; i < types.length; i++) {
+                    this.schema.toObject().properties[types[i].name] = this.generateProperties(types[i].attributeDefinitions)
                 }
                 resolve(this.schema);
             });
         });
     }
 
+    private generateProperties(attributeDefinitions: any): any {
+        let properties = {};
+        properties["id"] = {"type": "string"};
+        properties["name"] = {"type": "string"};
+        properties["href"] = {"type": "string"};
+        for(let attribute of attributeDefinitions) {
+            switch (attribute.attributeType) {
+                case "Number":
+                    properties[attribute.name] = {"type":"number"};
+                    break;
+                case "Link":
+                    if(attribute.options.entityType != undefined && attribute.options.entityType.attributeDefinitions != undefined) {
+                        properties[attribute.name] = this.generateProperties(attribute.options.entityType.attributeDefinitions);
+                        break;
+                    }
+                default:
+                    properties[attribute.name] = {"type":"string"};
+            }
+        }
+        let required = ["id", "name"];
+        return {"type": "array", "items":{"type": "object", "properties":properties, "required": required}};
+    }
+
     private fetchTypes() : Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.handleRequests(this.config.url + "/workspaces").then((workspaces) => {
-                for (var w = 0; w < workspaces.length; w++) {
-                    if (workspaces[w].name.toLowerCase() === this.config.workspace.toLowerCase()) {
-                        this.handleRequests(this.config.url + "/workspaces/" + workspaces[w].id + "/entityTypes").then((types) => {
-                            var p = [];
-                            var allTypes = [];
-                            for (var i = 0; i < types.length; i++) {
-                                p.push(this.handleRequests(types[i].href).then((type) => {
-                                    allTypes.push(type);
-                                }));
-                            }
+                //search for workspace id
+                for(let workspace of workspaces) {
+                    if(workspace.name.toLowerCase() == this.config.workspace.toLowerCase()) {
+                        this.handleRequests(this.config.url + "/workspaces/"+workspace.id+"/entityTypes").then((types) => {
+                            let funcs = [];
+                            let typesList = [];
+                            for(let type of types) {
+                                    funcs.push(new Promise<any> ((resolve) => {
+                                        this.handleRequests(type.href).then((data) => {
+                                            for (let attribute of data.attributeDefinitions) {
+                                                if(attribute.options != undefined && attribute.options.entityType != undefined) {
+                                                    this.handleRequests(attribute.options.entityType.href).then((answer) => {
+                                                        attribute.options.entityType.attributeDefinitions = answer.attributeDefinitions;
+                                                        type.attributeDefinitions = data.attributeDefinitions;
+                                                        typesList.push(type);
+                                                        resolve();
+                                                    });
+                                                }
+                                            }
+                                        });
 
-                            Promise.all(p).then(() => {
-                                resolve(allTypes);
-                            }).catch((err) => {
-                                this.logger.error(err);
+                                    }));
+                            }
+                            Promise.all(funcs).then(() => {
+                                resolve(typesList);
                             });
                         });
                     }
@@ -179,11 +181,31 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
     prepare(context: SyncPipes.IPipelineContext, logger: SyncPipes.ILogger): Promise<any> {
         this.context = context;
         this.logger = logger;
-        var Client = require('node-rest-client').Client;
-        this.client = new Client();
-        return this.updateSchema().then( (schema) => {
-            this.schema = schema;
+        return new Promise<any> ((resolve) => {
+            this.getToken().then(() => {
+                this.updateSchema().then( (schema) => {
+                    this.schema = schema;
+                    resolve(schema);
+                });
+            });
         });
+    }
+
+
+    private getToken() : Promise<any> {
+        return new Promise<any> ((resolve,reject) => {
+            let Client = require('node-rest-client').Client;
+            this.client = new Client({ user: this.config.username, password: this.config.password });
+            this.handleRequests(this.config.url + "/jwt").then((answer) => {
+                this.args = {
+                    headers: {
+                        "Authorization": "Bearer " + answer.token
+                    }
+                };
+                resolve();
+            });
+        });
+
     }
 
 
