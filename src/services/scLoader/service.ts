@@ -2,7 +2,6 @@ import * as stream from 'stream';
 import * as SyncPipes from "../../app/index";
 import * as _ from 'lodash'
 import * as path from 'path';
-import {readFileSync, writeFileSync} from 'fs';
 // config
 import {Configuration} from './Configuration'
 import 'node-rest-client';
