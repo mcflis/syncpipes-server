@@ -132,8 +132,8 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                         }
                         this.logger.debug("Total number of issues: "+_issues.total, null);
                         this.logger.debug("Number of issues per page: "+_issues.maxResults, null);
-                        this.logger.debug("issues : "+nextPage+" : "+issues, null);
-                        maxResults = _issues.total-_issues.startAt < maxResults?_issues.total-_issues.startAt:maxResults
+                        this.logger.debug("issues : "+nextPage+" : "+ issues.length, null);
+                        maxResults = _issues.total-_issues.startAt < maxResults?_issues.total-_issues.startAt:maxResults;
                         this.fetchIssuesForPage(nextPage, maxResults, issues);
                     }
                 }

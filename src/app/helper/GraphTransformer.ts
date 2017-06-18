@@ -117,7 +117,16 @@ export class GraphTransformer {
                     if (obj.primary) {
                         primary = obj;
                     }
-                    tmp[obj.to] = obj.value;
+                    //if destination path has more then one level create an object
+                    if(obj.to.split('/').length > 1) {
+                        let value = obj.value;
+                        for(let i of obj.to.split('/').reverse()) {
+                            let data = {};
+                            data[i] = value;
+                            value = data;
+                        }
+                        tmp = lodash.merge(tmp,value);
+                    } else tmp[obj.to] = obj.value;
                 }
                 if (lodash.isPlainObject(currentNode)) {
                     let insert = true;
@@ -372,7 +381,6 @@ export class GraphTransformer {
                 });
             }
         }
-
         return groups;
     }
 

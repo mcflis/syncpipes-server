@@ -429,6 +429,210 @@
               "assignee",
               "status"
             ]
+          },
+          "transitions": {
+            "items": {
+              "properties": {
+                "fields": {
+                  "properties": {
+                    "colour": {
+                      "properties": {
+                        "allowedValues": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "operations": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "required": {
+                          "type": "boolean"
+                        },
+                        "schema": {
+                          "properties": {
+                            "custom": {
+                              "type": "string"
+                            },
+                            "customId": {
+                              "type": "integer"
+                            },
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "summary": {
+                      "properties": {
+                        "allowedValues": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "operations": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "required": {
+                          "type": "boolean"
+                        },
+                        "schema": {
+                          "properties": {
+                            "custom": {
+                              "type": "string"
+                            },
+                            "customId": {
+                              "type": "integer"
+                            },
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "to": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "iconUrl": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "self": {
+                      "type": "string"
+                    },
+                    "statusCategory": {
+                      "properties": {
+                        "colorName": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "integer"
+                        },
+                        "key": {
+                          "type": "string"
+                        },
+                        "self": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "comments": {
+            "items": {
+              "properties": {
+                "author": {
+                  "properties": {
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "created": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "self": {
+                  "type": "string"
+                },
+                "updateAuthor": {
+                  "properties": {
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "updated": {
+                  "type": "string"
+                },
+                "visibility": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
           }
         },
         "required": [
