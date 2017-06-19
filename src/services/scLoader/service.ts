@@ -1,10 +1,11 @@
 import * as stream from 'stream';
 import * as SyncPipes from "../../app/index";
+import * as _ from 'lodash'
 import * as path from 'path';
-import { readFileSync } from 'fs';
 // config
-import { Configuration } from './Configuration'
+import {Configuration} from './Configuration'
 import 'node-rest-client';
+import forEachChild = ts.forEachChild;
 
 /**
  * Load Contacts to Exchange
@@ -20,6 +21,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * Node Rest Client
      */
     private client: any;
+    private args: any;
 
     /**
      * Workflow context
@@ -40,6 +42,41 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * Extension schema
      */
     private schema: SyncPipes.ISchema;
+
+    /**
+     * ID of the workspace in SocioCortex
+     */
+    private workspaceId: string;
+
+    /**
+     * Counters for debug mode
+     */
+    private entityCounter = {
+        value: 0,
+        increase: () => {
+            //print info every 50 entities saved
+            if(this.entityCounter.value % 50 == 0) {
+                this.logger.debug("Entities saved: "+ this.entityCounter.value, null);
+            }
+            this.entityCounter.value++;
+        },
+        reset: () => {
+            this.entityCounter.value = 0;
+        }
+    };
+    private attributesCounter = {
+        value: 0,
+        increase: () => {
+            //print info every 50 entity attributes saved
+            if(this.attributesCounter.value % 50 == 0) {
+                this.logger.debug("Entity attributes saved: "+ this.attributesCounter.value, null);
+            }
+            this.attributesCounter.value++;
+        },
+        reset: () => {
+            this.attributesCounter.value = 0;
+        }
+    };
 
     constructor() {
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
@@ -70,76 +107,82 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * @returns {Promise<SyncPipes.ISchema>}
      */
     getConfigSchema(config): Promise<SyncPipes.ISchema> {
-
         this.setConfiguration(config.config);
-        var Client = require('node-rest-client').Client;
-        this.client = new Client({ user: this.config.username, password: this.config.password });
-        return this.updateSchema();
-
-
+        return new Promise<any>((resolve) => {
+            this.getToken().then(() => {
+                resolve(this.updateSchema());
+            });
+        });
     }
 
-    updateSchema(): Promise<SyncPipes.ISchema> {
+    private updateSchema(): Promise<SyncPipes.ISchema> {
         return new Promise<SyncPipes.ISchema>((resolve, reject) => {
             this.fetchTypes().then((types) => {
-                for(var i = 0; i < types.length; i++) {
-                    var properties = {};
-                    properties["id"] = {"type": "string", "default": types[i].id};
-                    properties["name"] = {"type": "string"};
-                    properties["href"] = {"type": "string"};
-                    for(var j=0; j<types[i].attributeDefinitions.length; j++) {
-                        //TODO: JSON Schema generation has to be improved according to standard
-                        switch (types[i].attributeDefinitions[j].attributeType) {
-                            case "Number":
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "number"};
-                                break;
-                            case "Link":
-                                // attribute definitions can contain references to system types like Pages
-                                // (then entityType is undefined)
-                                // or to the custom types (then entityType is an object, that contains: id, name, href )
-                                if (types[i].attributeDefinitions[j].options["entityType"] == undefined) {
-                                    properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                                }
-                                else {
-                                    properties[types[i].attributeDefinitions[j].name] = {"type": "string", "href": types[i].attributeDefinitions[j].options.entityType.name };
-                                }
-                                break;
-                            case "Text":
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                                break;
-                            case "Date":
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                                break;
-                            default:
-                                properties[types[i].attributeDefinitions[j].name] = {"type": "string"};
-                        }
-                    }
-                    var required = ["id", "name"];
-                    this.schema.toObject().properties[types[i].name.toString()] = {"type": "array", "items":{"type": "object", "properties":properties, "required": required}};
+                for (let i = 0; i < types.length; i++) {
+                    this.schema.toObject().properties[types[i].name] = this.generateProperties(types[i]);
                 }
                 resolve(this.schema);
             });
         });
     }
 
-    private fetchTypes() : Promise<any> {
+    private generateProperties(type: any): any {
+        let properties = {};
+        properties["id"] = {"type": "string", "value": type.id};
+        properties["name"] = {"type": "string", value: type.name};
+        properties["href"] = {"type": "string", value: type.href};
+        for (let attribute of type.attributeDefinitions) {
+            switch (attribute.attributeType) {
+                case "Number":
+                    properties[attribute.name] = {"type": "number"};
+                    break;
+                case "Link":
+                    if (attribute.options.entityType != undefined && attribute.options.entityType.name != undefined) {
+                        properties[attribute.name] = {
+                            "type": "array", "items": {
+                                "type": "object", "properties": {
+                                    id: {
+                                        type: "string",
+                                        entityType: {
+                                            name: attribute.options.entityType.name,
+                                            id: attribute.options.entityType.id
+                                        }
+                                    }
+                                }, "required": ["id"]
+                            }
+                        };
+                        break;
+                    }
+                default:
+                    if (attribute.name != "id") properties[attribute.name] = {"type": "string"};
+            }
+        }
+        let required = ["id", "name"];
+        return {"type": "array", "items": {"type": "object", "properties": properties, "required": required}};
+    }
+
+    private fetchTypes(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.handleRequests(this.config.url + "/workspaces").then((workspaces) => {
-                for (var w = 0; w < workspaces.length; w++) {
-                    if (workspaces[w].name.toLowerCase() === this.config.workspace.toLowerCase()) {
-                        this.handleRequests(this.config.url + "/workspaces/" + workspaces[w].id + "/entityTypes").then((types) => {
-                            var p = [];
-                            var allTypes = [];
-                            for (var i = 0; i < types.length; i++) {
-                                p.push(this.handleRequests(types[i].href).then((type) => {
-                                    allTypes.push(type);
+                //search for workspace id
+                for (let workspace of workspaces) {
+                    if (workspace.name.toLowerCase() == this.config.workspace.toLowerCase()) {
+                        this.workspaceId = workspace.id;
+                        this.handleRequests(this.config.url + "/workspaces/" + workspace.id + "/entityTypes").then((types) => {
+                            let funcs = [];
+                            let typesList = [];
+                            for (let type of types) {
+                                funcs.push(new Promise<any>((resolve) => {
+                                    this.handleRequests(type.href).then((data) => {
+                                        type.attributeDefinitions = data.attributeDefinitions;
+                                        typesList.push(type);
+                                        resolve();
+                                    });
+
                                 }));
                             }
-
-                            Promise.all(p).then(() => {
-                                resolve(allTypes);
-                            }).catch((err) => {
-                                this.logger.error(err);
+                            Promise.all(funcs).then(() => {
+                                resolve(typesList);
                             });
                         });
                     }
@@ -148,9 +191,9 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         });
     }
 
-    handleRequests(url: string) : Promise<any> {
+    handleRequests(url: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.client.get(url, (data, response) => {
+            this.client.get(url, this.args, (data, response) => {
                 resolve(data);
             });
         });
@@ -179,60 +222,156 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
     prepare(context: SyncPipes.IPipelineContext, logger: SyncPipes.ILogger): Promise<any> {
         this.context = context;
         this.logger = logger;
-        var Client = require('node-rest-client').Client;
-        this.client = new Client();
-        return this.updateSchema().then( (schema) => {
-            this.schema = schema;
+        this.entityCounter.reset();
+        this.attributesCounter.reset();
+        return new Promise<any>((resolve) => {
+            this.getToken().then(() => {
+                this.updateSchema().then((schema) => {
+                    this.schema = schema;
+                    resolve(schema);
+                });
+            });
         });
+    }
+
+
+    private getToken(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            let Client = require('node-rest-client').Client;
+            this.client = new Client({user: this.config.username, password: this.config.password});
+            this.handleRequests(this.config.url + "/jwt").then((answer) => {
+                this.args = {
+                    headers: {
+                        "Authorization": "Bearer " + answer.token
+                    }
+                };
+                resolve();
+            });
+        });
+
     }
 
 
     load(): stream.Writable {
 
         this.stream = new stream.Writable({objectMode: true});
-        this.stream._write = (entities, encoding, callback) => {
-            Object.keys(entities).forEach(function(key) {
-                var val = entities[key];
-
-                for (var i=0; i<val.length; i++){
-                    console.log(val[i]);
-                }
+        this.stream._write = (chunk, encoding, callback) => {
+            let promises = [];
+            this.logger.debug("Data loading started", null);
+            // for every entityType
+            _.forEach(chunk, (entities: any, type: string) => {
+                //for every entity
+                _.forEach(entities, (entity: any) => {
+                    //create entity
+                    promises.push(this.createEntity(entity, type));
+                });
 
             });
-            //console.log(`Chunk: ${JSON.stringify(entities, null, "  ")}`);
+            Promise.all(promises).then(() => {
+                promises = [];
+                _.forEach(chunk, (entities: any, type: string) => {
+                    //for every entity
+                    _.forEach(entities, (entity: any) => {
+                        promises.push(this.uploadAttributes(entity, chunk, type, entity.scId));
+                    });
+                });
 
-            //for(var i=0; i<chunk.length; i++) {
-            //    console.log(chunk[i]);
-            //}
-//
-//
-//                var itemId = this.getUniqueId(entities[i].url);
-//                var args = {
-//                    data: entities[i],
-//                    headers: { "Content-Type": "application/json" }
-//                };
-//
-//                if(itemId != null)
-//                    entities[i].uniqueId = itemId;
-///*
-//                this.handlePostRequests(this.contactsUrl, args).then((response) => {
-//                    if(response != null) {
-//                        // create new contact
-//                        console.log(response);
-//                    } else {
-//                        // log error
-//                    }
-//                });
-//*/
-
-            callback();
+                Promise.all(promises).then(() => {
+                    _.forEach(chunk, (entities: any, type: string) => {
+                        this.logger.debug("Entity type " + type + " saved: " + entities.length + " entities", null);
+                    });
+                    this.logger.debug("Data loading finished", null);
+                });
+            });
         };
 
         return this.stream;
     }
 
+    private uploadAttributes(attributes: any, chunk: any, type: string, id: string): Promise<any> {
+        return new Promise<any>((resolve) => {
+            this.handleRequests(this.config.url + "/entities/" + id + "/attributes").then((entityAttributes) => {
+                let promises = [];
+                _.forEach(attributes, (value: any, key: string) => {
+                    let attribute = <any>_.find(entityAttributes, (attribute: any) => {
+                        return attribute.name == key;
+                    });
+                    if(attribute == null) return;
+                    //check if link
+                    if (_.has(this.schema.toObject().properties[type].items.properties[key], "items.properties.id.entityType")) {
+                        let entityType = this.schema.toObject().properties[type].items.properties[key].items.properties.id.entityType;
+                        //get linked object
+                        let link = <any>_.find(chunk[entityType.name], {id: value.id});
+                        //check if it's already uploaded to sc
+                        if (!_.has(link, "scId")) {
+                            this.logger.debug("entity doesn't exists", JSON.stringify(link));
+                            return;
+                        }
+                        //save attribute
+                        let args = {
+                            data: {
+                                values: [{
+                                    id: link.scId,
+                                    name: link.name,
+                                    href: "https://server.sociocortex.com/api/v1/entities/" + link.scId
+                                }]
+                            },
+                            headers: this.args.headers
+                        };
+                        promises.push(new Promise<any>((resolve) => {
+                            this.handlePutRequests(this.config.url + "/attributes/" + attribute.id, args).then((data) => {
+                                this.attributesCounter.increase();
+                                resolve(data.id);
+                            });
+                        }));
+                    } else {
+                        let args = {
+                            data: {
+                                values: [value]
+                            },
+                            headers: this.args.headers
+                        };
+                        promises.push(new Promise<any>((resolve) => {
+                            this.handlePutRequests(this.config.url + "/attributes/" + attribute.id, args).then((data) => {
+                                this.attributesCounter.increase();
+                                resolve(data.id);
+                            });
+                        }));
+                    }
+                });
+                Promise.all(promises).then(() => {
+                    resolve(true);
+                });
+            });
+        });
+    }
+
+    private createEntity(entity: any, type: string): Promise<any> {
+        return new Promise<any>((resolve) => {
+            if (!_.has(entity, "scId")) {
+                let args = {
+                    data: {
+                        "name": entity.name,
+                        "workspace": {
+                            "id": this.workspaceId
+                        },
+                        "entityType": {
+                            "id": this.schema.toObject().properties[type].items.properties.id.value
+                        }
+                    },
+                    headers: this.args.headers
+                };
+                this.handlePostRequests(this.config.url + "/entities", args).then((data: any) => {
+                    entity.scId = data.id;
+                    this.entityCounter.increase();
+                    resolve(data.id);
+                });
+            }
+        })
+    }
+
     getUniqueId(url): string {
-        if(url != null) {
+        if (url != null) {
             var params = url.split("&");
             for (var i = 0; i < params.length; i++) {
                 var keyValuePair = params[i].split("=");
@@ -251,9 +390,18 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         });
     }
 
-    handlePostRequests(url, args) : Promise<any> {
+    handlePostRequests(url, args): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.client.post(url, args, (data, response) => {
+                resolve(data);
+            });
+        });
+    }
+
+    handlePutRequests(url, args): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.client.registerMethod("putMethod", url, "PUT");
+            this.client.methods.putMethod(args, (data, response) => {
                 resolve(data);
             });
         });

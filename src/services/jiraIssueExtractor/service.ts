@@ -2,7 +2,7 @@ import * as stream from 'stream';
 import jiraClient = require("jira-connector");
 import * as SyncPipes from "../../app/index";
 // config
-import { Configuration } from './Configuration'
+import {Configuration} from './Configuration'
 
 /**
  * Extracts Issues from a jira org
@@ -57,7 +57,7 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
         this.config = new Configuration();
         this.logger = logger;
         this.config.load(context.pipeline.extractorConfig.config);
-        this.jira = new jiraClient( {
+        this.jira = new jiraClient({
             host: this.config.url
             // TODO: handel different types of authorisation
             //    type: "oauth",
@@ -74,7 +74,8 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
     extract(): stream.Readable {
         // create output stream
         this.stream = new stream.Readable({objectMode: true});
-        this.stream._read = () => {};
+        this.stream._read = () => {
+        };
 
         this.fetchIssuesForPage();
 
@@ -108,7 +109,7 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
      * @param config
      * @returns {Promise<SyncPipes.ISchema>}
      */
-    getConfigSchema(config ): Promise<SyncPipes.ISchema> {
+    getConfigSchema(config): Promise<SyncPipes.ISchema> {
         return new Promise<SyncPipes.ISchema>((resolve, reject) => {
             resolve(this.schema);
         });
@@ -120,21 +121,33 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                 if (err) {
                     reject(err);
                 } else {
-                    if (next > _issues.total){
+                    if (next > _issues.total) {
                         this.stream.push({"issues": issues});
                         this.stream.push(null);
                         return;
                     }
                     else {
-                        let nextPage = _issues.maxResults+_issues.startAt;
+                        let nextPage = _issues.maxResults + _issues.startAt;
+                        let promises = [];
                         for (let issue of _issues.issues) {
-                            issues.push(issue);
+                            promises.push(new Promise<any>((resolve) => {
+                                this.jira.issue.getComments({issueId: issue.id}, (err, data) => {
+                                    issue.fields.comments = data.comments;
+                                    this.jira.issue.getTransitions({issueId: issue.id}, (err, data) => {
+                                        issue.fields.transitions = data.transitions;
+                                        issues.push(issue);
+                                        resolve();
+                                    });
+                                });
+                            }));
                         }
-                        this.logger.debug("Total number of issues: "+_issues.total, null);
-                        this.logger.debug("Number of issues per page: "+_issues.maxResults, null);
-                        this.logger.debug("issues : "+nextPage+" : "+issues, null);
-                        maxResults = _issues.total-_issues.startAt < maxResults?_issues.total-_issues.startAt:maxResults
-                        this.fetchIssuesForPage(nextPage, maxResults, issues);
+                        Promise.all(promises).then(() => {
+                            this.logger.debug("Total number of issues: " + _issues.total, null);
+                            this.logger.debug("Number of issues per page: " + _issues.maxResults, null);
+                            this.logger.debug("issues : " + nextPage + " : " + issues.length, null);
+                            maxResults = _issues.total - _issues.startAt < maxResults ? _issues.total - _issues.startAt : maxResults;
+                            this.fetchIssuesForPage(nextPage, maxResults, issues);
+                        });
                     }
                 }
             };
@@ -144,13 +157,13 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                 this.jira.search.search({
                     jql: 'project=' + this.config.project,
                     startAt: next,
-                    maxResults:maxResults
+                    maxResults: maxResults
                 }, fnHandle);
             }
         });
     }
 
-    updateConfigSchema(inputData:Array<Buffer>) {
+    updateConfigSchema(inputData: Array<Buffer>) {
         return null;
     }
 }
