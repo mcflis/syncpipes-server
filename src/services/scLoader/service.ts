@@ -1,15 +1,10 @@
 import * as stream from 'stream';
 import * as SyncPipes from "../../app/index";
-import * as _ from 'lodash'
-import * as path from 'path';
-// config
+import * as _ from 'lodash';
 import {Configuration} from './Configuration'
 import 'node-rest-client';
-import forEachChild = ts.forEachChild;
+import 'events';
 
-/**
- * Load Contacts to Exchange
- */
 export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
 
     /**
@@ -21,6 +16,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * Node Rest Client
      */
     private client: any;
+
     private args: any;
 
     /**
@@ -55,8 +51,8 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         value: 0,
         increase: () => {
             //print info every 50 entities saved
-            if(this.entityCounter.value % 50 == 0) {
-                this.logger.debug("Entities saved: "+ this.entityCounter.value, null);
+            if (this.entityCounter.value % 50 == 0) {
+                this.logger.debug("Entities saved: " + this.entityCounter.value, null);
             }
             this.entityCounter.value++;
         },
@@ -64,12 +60,13 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
             this.entityCounter.value = 0;
         }
     };
+
     private attributesCounter = {
         value: 0,
         increase: () => {
             //print info every 50 entity attributes saved
-            if(this.attributesCounter.value % 50 == 0) {
-                this.logger.debug("Entity attributes saved: "+ this.attributesCounter.value, null);
+            if (this.attributesCounter.value % 50 == 0) {
+                this.logger.debug("Entity attributes saved: " + this.attributesCounter.value, null);
             }
             this.attributesCounter.value++;
         },
@@ -192,13 +189,12 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
     }
 
     handleRequests(url: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.client.get(url, this.args, (data, response) => {
+        return new Promise<any>((resolve) => {
+            this.client.get(url, this.args, (data) => {
                 resolve(data);
-            });
+            }).end();
         });
     }
-
 
     /**
      * TBD
@@ -224,6 +220,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         this.logger = logger;
         this.entityCounter.reset();
         this.attributesCounter.reset();
+
         return new Promise<any>((resolve) => {
             this.getToken().then(() => {
                 this.updateSchema().then((schema) => {
@@ -234,9 +231,8 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         });
     }
 
-
     private getToken(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+        return new Promise<any>((resolve) => {
             let Client = require('node-rest-client').Client;
             this.client = new Client({user: this.config.username, password: this.config.password});
             this.handleRequests(this.config.url + "/jwt").then((answer) => {
@@ -248,40 +244,85 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                 resolve();
             });
         });
-
     }
 
+    private createEntitiesForType(entities, type): Promise<any> {
+        if (entities.length < 1) {
+            return Promise.resolve();
+        }
+
+        let insertEntity = (entity) => {
+            if (!entity) {
+                this.logger.debug("Entities have been created for type: " + type, null);
+                return Promise.resolve();
+            }
+            return this.createEntity(entity, type).then(() => {
+                return insertEntity(entities.pop());
+            });
+        };
+
+        return insertEntity(entities.pop());
+    }
+
+    private createEntities(chunk): Promise<any> {
+        return new Promise<any>((resolve) => {
+            let promises = [];
+            for (let type in chunk) {
+                if(chunk.hasOwnProperty(type)) {
+                    let entities = chunk[type].slice(0);
+                    promises.push(this.createEntitiesForType(entities, type));
+                }
+            }
+            Promise.all(promises).then(() => {
+                this.logger.debug("Entities have been created", null);
+                resolve();
+            });
+        });
+    }
+
+    private updateEntitiesForType(chunk, entities, type): Promise<any> {
+        if (entities.length < 1) {
+            return Promise.resolve();
+        }
+
+        let updateEntity = (entity) => {
+            if (!entity) {
+                this.logger.debug("Entities have been updated for type: " + type, null);
+                return Promise.resolve();
+            }
+            return this.uploadAttributes(entity, chunk, type, entity.scId).then(() => {
+                return updateEntity(entities.pop());
+            });
+        };
+
+        return updateEntity(entities.pop());
+    }
+
+    private updateEntities(chunk): Promise<any> {
+        return new Promise<any>((resolve) => {
+            let p = [];
+            for(let type in chunk) {
+                if(chunk.hasOwnProperty(type)) {
+                    let entities = chunk[type].slice(0);
+                    p.push(this.updateEntitiesForType(chunk, entities, type));
+                }
+            }
+            Promise.all(p).then(() => {
+                this.logger.debug("Entities have been updated", null);
+                resolve();
+            });
+        });
+    }
 
     load(): stream.Writable {
-
         this.stream = new stream.Writable({objectMode: true});
         this.stream._write = (chunk, encoding, callback) => {
-            let promises = [];
             this.logger.debug("Data loading started", null);
-            // for every entityType
-            _.forEach(chunk, (entities: any, type: string) => {
-                //for every entity
-                _.forEach(entities, (entity: any) => {
-                    //create entity
-                    promises.push(this.createEntity(entity, type));
-                });
-
-            });
-            Promise.all(promises).then(() => {
-                promises = [];
-                _.forEach(chunk, (entities: any, type: string) => {
-                    //for every entity
-                    _.forEach(entities, (entity: any) => {
-                        promises.push(this.uploadAttributes(entity, chunk, type, entity.scId));
-                    });
-                });
-
-                Promise.all(promises).then(() => {
-                    _.forEach(chunk, (entities: any, type: string) => {
-                        this.logger.debug("Entity type " + type + " saved: " + entities.length + " entities", null);
-                    });
-                    this.logger.debug("Data loading finished", null);
-                });
+            this.createEntities(chunk).then(() => {
+                this.updateEntities(chunk).then(() => {this.logger.debug("Data loading finished", null);});
+            }).catch((err) => {
+                this.logger.error(err);
+                callback(err);
             });
         };
 
@@ -296,12 +337,12 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                     let attribute = <any>_.find(entityAttributes, (attribute: any) => {
                         return attribute.name == key;
                     });
-                    if(attribute == null) return;
+                    if (attribute == null) return;
                     //check if link
                     if (_.has(this.schema.toObject().properties[type].items.properties[key], "items.properties.id.entityType")) {
                         let entityType = this.schema.toObject().properties[type].items.properties[key].items.properties.id.entityType;
                         //get linked object
-                        let link = <any>_.find(chunk[entityType.name], {id: value.id});
+                        let link = <any>_.find(chunk[entityType.name], {id: value});
                         //check if it's already uploaded to sc
                         if (!_.has(link, "scId")) {
                             this.logger.debug("entity doesn't exists", JSON.stringify(link));
@@ -309,13 +350,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                         }
                         //save attribute
                         let args = {
-                            data: {
-                                values: [{
-                                    id: link.scId,
-                                    name: link.name,
-                                    href: "https://server.sociocortex.com/api/v1/entities/" + link.scId
-                                }]
-                            },
+                            data: { values: [ { id: link.scId } ] },
                             headers: this.args.headers
                         };
                         promises.push(new Promise<any>((resolve) => {
@@ -326,9 +361,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                         }));
                     } else {
                         let args = {
-                            data: {
-                                values: [value]
-                            },
+                            data: { values: [value] },
                             headers: this.args.headers
                         };
                         promises.push(new Promise<any>((resolve) => {
@@ -361,15 +394,19 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                     },
                     headers: this.args.headers
                 };
+
                 this.handlePostRequests(this.config.url + "/entities", args).then((data: any) => {
                     entity.scId = data.id;
                     this.entityCounter.increase();
                     resolve(data.id);
+                }).catch(() => {
+                    resolve();
                 });
             }
         })
     }
 
+    /*
     getUniqueId(url): string {
         if (url != null) {
             var params = url.split("&");
@@ -389,21 +426,42 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
             });
         });
     }
+    */
 
     handlePostRequests(url, args): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.client.post(url, args, (data, response) => {
+            let Client = require('node-rest-client').Client;
+            let client = new Client({user: this.config.username, password: this.config.password});
+            client.post(url, args, (data) => {
                 resolve(data);
-            });
+            }).on('requestTimeout', () => {
+                this.logger.error('request has expired');
+                reject();
+            }).on('responseTimeout', () => {
+                this.logger.error('response has expired');
+                reject();
+            }).on('error', (e) => {
+                this.logger.error(e);
+                reject();
+            }).end();
         });
     }
 
     handlePutRequests(url, args): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.client.registerMethod("putMethod", url, "PUT");
-            this.client.methods.putMethod(args, (data, response) => {
+            this.client.methods.putMethod(args, (data) => {
                 resolve(data);
-            });
+            }).on('requestTimeout', () => {
+                this.logger.error('request has expired');
+                reject();
+            }).on('responseTimeout', () => {
+                this.logger.error('response has expired');
+                reject();
+            }).on('error', (e) => {
+                this.logger.error(e);
+                reject();
+            }).end();
         });
     }
 }

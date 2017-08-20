@@ -132,12 +132,11 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                         for (let issue of _issues.issues) {
                             promises.push(new Promise<any>((resolve) => {
                                 this.jira.issue.getComments({issueId: issue.id}, (err, data) => {
-                                    issue.fields.comments = data.comments;
-                                    this.jira.issue.getTransitions({issueId: issue.id}, (err, data) => {
-                                        issue.fields.transitions = data.transitions;
+                                    if(data) {
+                                        issue.fields.comments = data.comments;
                                         issues.push(issue);
-                                        resolve();
-                                    });
+                                    }
+                                    resolve();
                                 });
                             }));
                         }
