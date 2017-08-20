@@ -1,0 +1,58 @@
+{
+  "id": "http://some.site.somewhere/entry-schema#",
+  "$schema": "http://json-schema.org/draft-054/schema#",
+  "description": "Schema for Jira project extractor",
+  "type": "object",
+  "properties": {
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "id": "/items/properties/id",
+            "type": "string"
+          },
+          "key": {
+            "id": "/items/properties/key",
+            "type": "string"
+          },
+          "name": {
+            "id": "/items/properties/name",
+            "type": "string"
+          },
+          "description": {
+            "id": "/items/properties/description",
+            "type": "string"
+          },
+          "projectCategory": {
+            "id": "/items/properties/projectCategory",
+            "properties": {
+              "description": {
+                "id": "/items/properties/projectCategory/properties/description",
+                "type": "string"
+              },
+              "id": {
+                "id": "/items/properties/projectCategory/properties/id",
+                "type": "string"
+              },
+              "name": {
+                "id": "/items/properties/projectCategory/properties/name",
+                "type": "string"
+              },
+              "self": {
+                "id": "/items/properties/projectCategory/properties/self",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "self": {
+            "id": "/items/properties/self",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

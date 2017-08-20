@@ -5,6 +5,7 @@ import { RequirementsMySQLLoaderService } from "./services/requirementsMysqlLoad
 import { GitHubIssueExtractorService } from "./services/githubIssueExtractor/service";
 import { PureIssueLoaderService } from "./services/pureIssueLoader/service";
 import { JiraIssueExtractorService } from "./services/jiraIssueExtractor/service";
+import { JiraProjectExtractorService } from "./services/jiraProjectExtractor/service";
 import { SocioCortexTypesExtractorService } from "./services/scExtractor/service";
 import { SocioCortexLoaderService } from "./services/scLoader/service";
 import { OutlookContactsLoaderService } from "./services/OutlookContactsLoader/service";
@@ -36,6 +37,7 @@ kernel.loadService(new RequirementsMySQLLoaderService());
 kernel.loadService(new GitHubIssueExtractorService());
 kernel.loadService(new PureIssueLoaderService());
 kernel.loadService(new JiraIssueExtractorService());
+kernel.loadService(new JiraProjectExtractorService());
 kernel.loadService(new SocioCortexTypesExtractorService());
 kernel.loadService(new OutlookContactsLoaderService());
 kernel.loadService(new SocioCortexLoaderService());
