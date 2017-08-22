@@ -44,6 +44,9 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      */
     private workspaceId: string;
 
+
+    private scTypes: any;
+
     /**
      * Counters for debug mode
      */
@@ -126,8 +129,9 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
     private generateProperties(type: any): any {
         let properties = {};
         properties["id"] = {"type": "string", "value": type.id};
-        properties["name"] = {"type": "string", value: type.name};
-        properties["href"] = {"type": "string", value: type.href};
+        properties["name"] = {"type": "string", "value": type.name};
+        properties["href"] = {"type": "string", "value": type.href};
+        this.scTypes.push({"name": type.name, "id": type.id});
         for (let attribute of type.attributeDefinitions) {
             switch (attribute.attributeType) {
                 case "Number":
@@ -220,6 +224,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         this.logger = logger;
         this.entityCounter.reset();
         this.attributesCounter.reset();
+        this.scTypes = [];
 
         return new Promise<any>((resolve) => {
             this.getToken().then(() => {
@@ -379,30 +384,61 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         });
     }
 
+    private updateSCIdIfEntityExists(entity: any, type: string): Promise<any> {
+        return new Promise<any>((resolve) => {
+            //check if entity exists
+            let promises = [];
+            for(let i=0; i<this.scTypes.length; i++) {
+                let scType = this.scTypes[i];
+                if(scType.name.toLowerCase() === type.toLowerCase()) {
+                    promises.push(new Promise<any>((resolve) => {
+                        this.handleGetRequests(this.config.url + "/entityTypes/" + scType.id + "/entities").then(data => {
+                            for(let j=0; j<data.length; j++) {
+                                let e = data[j];
+                                if(e.name.toLowerCase() === entity.name.toLowerCase()) {
+                                    entity.scId = e.id;
+                                    this.logger.debug("entity already exists: " + e.id);
+                                }
+                            }
+                            resolve();
+                        })
+                    }));
+                }
+            }
+            Promise.all(promises).then(() => {
+                resolve();
+            });
+        });
+    }
+
     private createEntity(entity: any, type: string): Promise<any> {
         return new Promise<any>((resolve) => {
-            if (!_.has(entity, "scId")) {
-                let args = {
-                    data: {
-                        "name": entity.name,
-                        "workspace": {
-                            "id": this.workspaceId
+            this.updateSCIdIfEntityExists(entity, type).then(() => {
+                if (!_.has(entity, "scId")) {
+                    let args = {
+                        data: {
+                            "name": entity.name,
+                            "workspace": {
+                                "id": this.workspaceId
+                            },
+                            "entityType": {
+                                "id": this.schema.toObject().properties[type].items.properties.id.value
+                            }
                         },
-                        "entityType": {
-                            "id": this.schema.toObject().properties[type].items.properties.id.value
-                        }
-                    },
-                    headers: this.args.headers
-                };
+                        headers: this.args.headers
+                    };
 
-                this.handlePostRequests(this.config.url + "/entities", args).then((data: any) => {
-                    entity.scId = data.id;
-                    this.entityCounter.increase();
-                    resolve(data.id);
-                }).catch(() => {
-                    resolve();
-                });
-            }
+                    this.handlePostRequests(this.config.url + "/entities", args).then((data: any) => {
+                        entity.scId = data.id;
+                        this.entityCounter.increase();
+                        resolve(data.id);
+                    }).catch(() => {
+                        resolve();
+                    });
+                } else {
+                    resolve(entity.scId);
+                }
+            });
         })
     }
 
@@ -418,15 +454,20 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         }
         return null;
     }
+    */
 
     handleGetRequests(url: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.client.get(url, (data, response) => {
+        return new Promise<any>((resolve) => {
+            let Client = require('node-rest-client').Client;
+            let client = new Client({user: this.config.username, password: this.config.password});
+            client.get(url, (data) => {
                 resolve(data);
-            });
+            }).on('error', (e) => {
+                this.logger.error(e);
+            }).end();
         });
     }
-    */
+
 
     handlePostRequests(url, args): Promise<any> {
         return new Promise<any>((resolve, reject) => {
