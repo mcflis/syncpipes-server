@@ -13,3 +13,4 @@ src/**/*.js.map
 cert/
 docs/dump/
 typings/
+daemon
