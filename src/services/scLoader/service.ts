@@ -107,6 +107,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
      * @returns {Promise<SyncPipes.ISchema>}
      */
     getConfigSchema(config): Promise<SyncPipes.ISchema> {
+        this.scTypes = [];
         this.setConfiguration(config.config);
         return new Promise<any>((resolve) => {
             this.getToken().then(() => {
@@ -130,7 +131,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
         let properties = {};
         properties["id"] = {"type": "string", "value": type.id};
         properties["name"] = {"type": "string", "value": type.name};
-        properties["href"] = {"type": "string", "value": type.href};
+        properties["href"] = {"type": "string", "value": this.config.url + "/entityTypes/" + type.id};
         this.scTypes.push({"name": type.name, "id": type.id});
         for (let attribute of type.attributeDefinitions) {
             switch (attribute.attributeType) {
@@ -158,8 +159,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                     if (attribute.name != "id") properties[attribute.name] = {"type": "string"};
             }
         }
-        let required = ["id", "name"];
-        return {"type": "array", "items": {"type": "object", "properties": properties, "required": required}};
+        return {"type": "array", "items": {"type": "object", "properties": properties, "required": ["id", "name"]}};
     }
 
     private fetchTypes(): Promise<any> {
@@ -174,7 +174,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
                             let typesList = [];
                             for (let type of types) {
                                 funcs.push(new Promise<any>((resolve) => {
-                                    this.handleRequests(type.href).then((data) => {
+                                    this.handleRequests(this.config.url + "/entityTypes/" + type.id).then((data) => {
                                         type.attributeDefinitions = data.attributeDefinitions;
                                         typesList.push(type);
                                         resolve();
