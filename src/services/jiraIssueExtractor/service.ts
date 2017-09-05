@@ -58,11 +58,11 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
         this.logger = logger;
         this.config.load(context.pipeline.extractorConfig.config);
         this.jira = new jiraClient({
-            host: this.config.url
-            // TODO: handel different types of authorisation
-            //    type: "oauth",
-            //    username: this.config.username,
-            //    token: this.config.token
+            host: this.config.url,
+            basic_auth: {
+                username: this.config.username,
+                password: this.config.password
+            }
         });
         //this.github.authenticate({
         //    type: "oauth",
@@ -77,6 +77,7 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
         this.stream._read = () => {
         };
 
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
         this.fetchIssuesForPage();
 
         return this.stream;
@@ -154,7 +155,7 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                 throw new Error('No output stream available');
             } else {
                 this.jira.search.search({
-                    jql: 'project=' + this.config.project,
+                    jql: 'project=' + "\"" + this.config.project + "\"",
                     startAt: next,
                     maxResults: maxResults
                 }, fnHandle);

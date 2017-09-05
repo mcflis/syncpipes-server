@@ -1,7 +1,7 @@
 import * as stream from 'stream';
 import jiraClient = require("jira-connector");
 import * as SyncPipes from "../../app/index";
-import { Configuration } from './Configuration'
+import { Configuration } from './Configuration';
 
 /**
  * Extracts Projects from a jira org
@@ -57,7 +57,11 @@ export class JiraProjectExtractorService implements SyncPipes.IExtractorService 
         this.logger = logger;
         this.config.load(context.pipeline.extractorConfig.config);
         this.jira = new jiraClient( {
-            host: this.config.url
+            host: this.config.url,
+            basic_auth: {
+                username: this.config.username,
+                password: this.config.password
+            }
         });
         return Promise.resolve();
     }
@@ -66,6 +70,7 @@ export class JiraProjectExtractorService implements SyncPipes.IExtractorService 
         // create output stream
         this.stream = new stream.Readable({objectMode: true});
         this.stream._read = () => {};
+        console.log("fetch all projects");
         this.fetchProjects();
         return this.stream;
     }
@@ -107,6 +112,7 @@ export class JiraProjectExtractorService implements SyncPipes.IExtractorService 
         if (this.stream === null) {
             throw new Error('No output stream available');
         } else {
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
             Promise.all([this.jira.project.getAllProjects()]).then((p) => {
                 this.stream.push({"projects": p[0]});
                 this.stream.push(null);
