@@ -8,7 +8,7 @@ export class Configuration implements IServiceConfiguration {
 
     private _username: string;
 
-    private _token: string;
+    private _password: string;
 
     private _project: string;
 
@@ -20,8 +20,8 @@ export class Configuration implements IServiceConfiguration {
         return this._username;
     }
 
-    get token(): string {
-        return this._token;
+    get password(): string {
+        return this._password;
     }
 
     get project(): string {
@@ -42,9 +42,9 @@ export class Configuration implements IServiceConfiguration {
                     "type": "string",
                     "description": "Jira username",
                 },
-                "token": {
+                "password": {
                     "type": "string",
-                    "description": "Jira personal access token",
+                    "description": "Jira password",
                 },
                 "project": {
                     "type": "string",
@@ -55,8 +55,8 @@ export class Configuration implements IServiceConfiguration {
             "required": [
                 "url",
                 "username",
-                "token",
-                "org",
+                "password",
+                "project",
             ]
         });
     }
@@ -65,15 +65,15 @@ export class Configuration implements IServiceConfiguration {
         return {
             "url": this._url,
             "username": this._username,
-            "token": this._token,
+            "password": this._password,
             "project": this._project
         };
     }
 
-    load({url, username, token, project}): void {
+    load({url, username, password, project}): void {
         this._url = url;
         this._username = username;
-        this._token = token;
+        this._password = password;
         this._project = project;
     }
 }

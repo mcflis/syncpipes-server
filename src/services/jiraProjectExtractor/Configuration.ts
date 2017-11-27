@@ -8,12 +8,18 @@ export class Configuration implements IServiceConfiguration {
 
     private _username: string;
 
+    private _password: string;
+
     get url(): string {
         return this._url;
     }
 
     get username(): string {
         return this._username;
+    }
+
+    get password(): string {
+        return this._password;
     }
 
     getSchema(): ISchema {
@@ -28,12 +34,17 @@ export class Configuration implements IServiceConfiguration {
                 "username": {
                     "type": "string",
                     "description": "Jira username",
+                },
+                "password": {
+                    "type": "string",
+                    "description": "Jira password",
                 }
             },
             "additionalProperties": false,
             "required": [
                 "url",
-                "username"
+                "username",
+                "password"
             ]
         });
     }
@@ -41,12 +52,14 @@ export class Configuration implements IServiceConfiguration {
     store(): Object {
         return {
             "url": this._url,
-            "username": this._username
+            "username": this._username,
+            "password": this._password
         };
     }
 
-    load({url, username, token, project}): void {
+    load({url, username, password}): void {
         this._url = url;
         this._username = username;
+        this._password = password
     }
 }

@@ -25,27 +25,9 @@
             "id": "/items/properties/description",
             "type": "string"
           },
-          "projectCategory": {
-            "id": "/items/properties/projectCategory",
-            "properties": {
-              "description": {
-                "id": "/items/properties/projectCategory/properties/description",
-                "type": "string"
-              },
-              "id": {
-                "id": "/items/properties/projectCategory/properties/id",
-                "type": "string"
-              },
-              "name": {
-                "id": "/items/properties/projectCategory/properties/name",
-                "type": "string"
-              },
-              "self": {
-                "id": "/items/properties/projectCategory/properties/self",
-                "type": "string"
-              }
-            },
-            "type": "object"
+          "projectTypeKey": {
+            "id": "/items/properties/projectTypeKey",
+            "type": "string"
           },
           "self": {
             "id": "/items/properties/self",
