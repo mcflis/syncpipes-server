@@ -1,0 +1,228 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema for Mongo Issue Loader",
+  "type": "object",
+  "properties": {
+    "projects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/project"
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/issue"
+      }
+    },
+    "projectCategories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/projectCategory"
+      }
+    },
+    "decisionCategories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/decisionCategory"
+      }
+    },
+    "qualityAttributes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/qualityAttribute"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "self": {
+          "type": "string"
+        },
+        "projectCategory": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "concepts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "issue": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "self": {
+          "type": "string"
+        },
+        "belongsTo": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "designDecision": {
+          "type": "string"
+        },
+        "decisionCategory": {
+          "type": "string"
+        },
+        "concepts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "qualityAttributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "issueType": {
+          "type": "string"
+        },
+        "issueLinks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "string"
+        },
+        "assignee": {
+          "type": "string"
+        },
+        "reporter": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "resolved": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "creator": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "projectCategory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "self": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "decisionCategory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "qualityAttribute": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "improvedBy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    }
+  }
+}

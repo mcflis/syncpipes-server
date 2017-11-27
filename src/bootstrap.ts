@@ -9,6 +9,7 @@ import { JiraProjectExtractorService } from "./services/jiraProjectExtractor/ser
 import { SocioCortexTypesExtractorService } from "./services/scExtractor/service";
 import { SocioCortexLoaderService } from "./services/scLoader/service";
 import { OutlookContactsLoaderService } from "./services/OutlookContactsLoader/service";
+import {MongoDBLoaderService} from "./services/MongoDBLoader/service";
 
 // parse .env file
 config({silent: true});
@@ -41,5 +42,6 @@ kernel.loadService(new JiraProjectExtractorService());
 kernel.loadService(new SocioCortexTypesExtractorService());
 kernel.loadService(new OutlookContactsLoaderService());
 kernel.loadService(new SocioCortexLoaderService());
+kernel.loadService(new MongoDBLoaderService());
 
 export { kernel }

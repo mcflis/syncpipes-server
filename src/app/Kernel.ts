@@ -56,8 +56,13 @@ export class Kernel {
      */
     public boot(): Promise<any> {
         // connect to mongo
-        mongoose.connect(this.mongoUrl());
-        mongoose.Promise = global.Promise;
+        let options = {
+            useMongoClient: true,
+            poolSize: 15,
+            promiseLibrary: global.Promise,
+        };
+        mongoose.connect(this.mongoUrl(), options);
+        (<any>mongoose).Promise = global.Promise;
         // config scheduler
         let scheduler = Container.get<IJobScheduler>('scheduler');
         return scheduler.configure(this.config.rabbitmq);

@@ -5,7 +5,7 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var gls = require('gulp-live-server');
 var mocha = require('gulp-mocha');
-var Service = require('node-windows').Service;
+//var Service = require('node-windows').Service;
 
 var config = {
   "buildDir":   "dist/",
@@ -31,12 +31,13 @@ var config = {
   ]
 };
 
-// Create a new service object
+/* Create a new service object
 var svc = new Service({
     name:'SyncPipes Server',
     description: 'SyncPipes server as a windows service.',
     script: 'app.js'
 });
+*/
 
 gulp.task('default', ['build']);
 
@@ -95,6 +96,7 @@ gulp.task('serve', ['build'], function () {
   });
 });
 
+/*
 gulp.task('install:service', ['build'], function () {
     // Listen for the "install" event, which indicates the
     // process is available as a service.
@@ -123,6 +125,7 @@ gulp.task('uninstall:service', ['build'], function () {
     // Uninstall the service.
     svc.uninstall();
 });
+*/
 
 /**
  * Invoke tests

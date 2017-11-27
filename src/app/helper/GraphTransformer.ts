@@ -302,13 +302,17 @@ export class GraphTransformer {
                     let subGraph = node.getNodeByPrefix(childMapping.getName());
                     let tmp = this.extract(subGraph, childMapping);
                     for (let i = 0; i < tmp.length; i++) {
-                        tmp[i] = tmp[i].concat(destObjects);
+                        if(destObjects.length > 0) {
+                            tmp[i] = tmp[i].concat(destObjects);
+                        }
                         result.push(tmp[i]);
                     }
+
                     // clear object since it has been merged
                     destObjects = [];
                 }
             }
+
             if (destObjects.length > 0) {
                 result.push(destObjects);
             }
@@ -318,7 +322,6 @@ export class GraphTransformer {
 
     extractSingle(node: ObjectGraphNode, mappingNode: MappingTree): Array<IDestinationValue> {
         let destObjects = [];
-
         if (mappingNode.getValue() instanceof Array) {
             for (let mapping of mappingNode.getValue()) {
                 // find leaf in node
