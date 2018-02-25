@@ -26,7 +26,7 @@ let kernel = new Kernel({
     },
     "rabbitmq": {
         "host": process.env.SYNCPIPES_RABBIT_HOST || "localhost",
-        "port": process.env.SYNCPIPES_RABBIT_PORT || 5671,
+        "port": process.env.SYNCPIPES_RABBIT_PORT || 5672,
         "user": process.env.SYNCPIPES_RABBIT_USER || "guest",
         "password": process.env.SYNCPIPES_RABBIT_PASSWORD || "guest",
         "vhost": process.env.SYNCPIPES_RABBIT_VHOST || "syncpipes"
