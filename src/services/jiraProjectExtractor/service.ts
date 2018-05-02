@@ -1,6 +1,6 @@
 import * as stream from 'stream';
-import jiraClient = require("jira-connector");
-import * as SyncPipes from "../../app/index";
+import jiraClient = require('jira-connector');
+import * as SyncPipes from '../../app/index';
 import { Configuration } from './Configuration';
 
 /**

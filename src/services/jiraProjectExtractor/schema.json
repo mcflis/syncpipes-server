@@ -10,28 +10,30 @@
         "type": "object",
         "properties": {
           "id": {
-            "id": "/items/properties/id",
             "type": "string"
           },
           "key": {
-            "id": "/items/properties/key",
             "type": "string"
           },
           "name": {
-            "id": "/items/properties/name",
             "type": "string"
           },
           "description": {
-            "id": "/items/properties/description",
             "type": "string"
           },
           "projectTypeKey": {
-            "id": "/items/properties/projectTypeKey",
             "type": "string"
           },
           "self": {
-            "id": "/items/properties/self",
             "type": "string"
+          },
+          "projectCategory": {
+            "type": "object",
+            "properties": {
+              "name" : {
+                "type": "string"
+              }
+            }
           }
         }
       }

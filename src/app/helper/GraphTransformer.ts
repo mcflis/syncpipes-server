@@ -6,6 +6,7 @@ import { MappingTree } from './MappingTree';
 
 import { ISchema } from "../service/Schema";
 import { IMapping, Mapping } from "../model/Mapping";
+import {error} from "util";
 
 interface IDestinationValue {
     to: string;
@@ -60,6 +61,7 @@ export class GraphTransformer {
         // target object
         let destObj = GraphTransformer.instantiateStructure(this.targetSchema.toObject(true));
         // iterate over mapping
+        //console.log(JSON.stringify(this.mappingGroups));
         for (let group of this.mappingGroups) {
             let toMerge = this.extract(graph.getNodeByPrefix(group.mapping.getName()), group.mapping);
             // merge sub destination object into root destination
@@ -80,6 +82,7 @@ export class GraphTransformer {
                 }
             }
         }
+
         return destObj;
     }
 
@@ -302,14 +305,15 @@ export class GraphTransformer {
                     let subGraph = node.getNodeByPrefix(childMapping.getName());
                     let tmp = this.extract(subGraph, childMapping);
                     for (let i = 0; i < tmp.length; i++) {
-                        if(destObjects.length > 0) {
-                            tmp[i] = tmp[i].concat(destObjects);
-                        }
-                        result.push(tmp[i]);
-                    }
+                        if(destObjects.length > 0)
+                            Array.prototype.push.apply(tmp[i], destObjects);
 
-                    // clear object since it has been merged
-                    destObjects = [];
+                        //tmp[i] = tmp[i].concat(destObjects);
+                        result.push(tmp[i]);
+                        //Array.prototype.push.apply(result, tmp[i]);
+                        // clear object since it has been merged
+                        destObjects = [];
+                    }
                 }
             }
 

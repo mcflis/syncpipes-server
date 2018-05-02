@@ -76,90 +76,416 @@
       "type": "object",
       "properties": {
         "name": {
+          "$id": "/properties/name",
           "type": "string"
         },
-        "key": {
-          "type": "string"
-        },
-        "self": {
-          "type": "string"
-        },
-        "belongsTo": {
-          "type": "string"
-        },
-        "summary": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "designDecision": {
-          "type": "string"
-        },
-        "decisionCategory": {
-          "type": "string"
-        },
-        "concepts": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "keywords": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "qualityAttributes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "issueType": {
-          "type": "string"
-        },
-        "issueLinks": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
+        "fields": {
+          "$id": "/properties/fields",
+          "type": "object",
+          "properties": {
+            "resolution": {
+              "$id": "/properties/fields/properties/resolution",
+              "type": "object",
+              "properties": {
+                "description": {
+                  "$id": "/properties/fields/properties/resolution/properties/description",
+                  "type": "string"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/resolution/properties/self",
+                  "type": "string"
+                },
+                "id": {
+                  "$id": "/properties/fields/properties/resolution/properties/id",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/resolution/properties/name",
+                  "type": "string"
+                }
+              }
+            },
+            "environment": {
+              "$id": "/properties/fields/properties/environment",
+              "type": "string"
+            },
+            "timeoriginalestimate": {
+              "$id": "/properties/fields/properties/timeoriginalestimate",
+              "type": "string"
+            },
+            "lastViewed": {
+              "$id": "/properties/fields/properties/lastViewed",
+              "type": "string"
+            },
+            "subtasks": {
+              "$id": "/properties/fields/properties/subtasks",
+              "type": "array"
+            },
+            "aggregatetimeestimate": {
+              "$id": "/properties/fields/properties/aggregatetimeestimate",
+              "type": "string"
+            },
+            "priority": {
+              "$id": "/properties/fields/properties/priority",
+              "type": "object",
+              "properties": {
+                "self": {
+                  "$id": "/properties/fields/properties/priority/properties/self",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/priority/properties/name",
+                  "type": "string"
+                }
+              }
+            },
+            "timespent": {
+              "$id": "/properties/fields/properties/timespent",
+              "type": "string"
+            },
+            "timeestimate": {
+              "$id": "/properties/fields/properties/timeestimate",
+              "type": "string"
+            },
+            "issuelinks": {
+              "$id": "/properties/fields/properties/issuelinks",
+              "type": "array"
+            },
+            "resolutiondate": {
+              "$id": "/properties/fields/properties/resolutiondate",
+              "type": "string"
+            },
+            "creator": {
+              "$id": "/properties/fields/properties/creator",
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "$id": "/properties/fields/properties/creator/properties/displayName",
+                  "type": "string"
+                },
+                "active": {
+                  "$id": "/properties/fields/properties/creator/properties/active",
+                  "type": "boolean"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/creator/properties/self",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/creator/properties/name",
+                  "type": "string"
+                },
+                "key": {
+                  "$id": "/properties/fields/properties/creator/properties/key",
+                  "type": "string"
+                },
+                "emailAddress": {
+                  "$id": "/properties/fields/properties/creator/properties/emailAddress",
+                  "type": "string"
+                }
+              }
+            },
+            "votes": {
+              "$id": "/properties/fields/properties/votes",
+              "type": "object",
+              "properties": {
+                "hasVoted": {
+                  "$id": "/properties/fields/properties/votes/properties/hasVoted",
+                  "type": "boolean"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/votes/properties/self",
+                  "type": "string"
+                },
+                "votes": {
+                  "$id": "/properties/fields/properties/votes/properties/votes",
+                  "type": "integer"
+                }
+              }
+            },
+            "labels": {
+              "$id": "/properties/fields/properties/labels",
+              "type": "array"
+            },
+            "created": {
+              "$id": "/properties/fields/properties/created",
+              "type": "string"
+            },
+            "aggregateprogress": {
+              "$id": "/properties/fields/properties/aggregateprogress",
+              "type": "object",
+              "properties": {
+                "progress": {
+                  "$id": "/properties/fields/properties/aggregateprogress/properties/progress",
+                  "type": "integer"
+                },
+                "total": {
+                  "$id": "/properties/fields/properties/aggregateprogress/properties/total",
+                  "type": "integer"
+                }
+              }
+            },
+            "workratio": {
+              "$id": "/properties/fields/properties/workratio",
+              "type": "integer"
+            },
+            "versions": {
+              "$id": "/properties/fields/properties/versions",
+              "type": "array"
+            },
+            "components": {
+              "$id": "/properties/fields/properties/components",
+              "type": "array",
+              "items": {
+                "$id": "/properties/fields/properties/components/items",
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "$id": "/properties/fields/properties/components/items/properties/self",
+                    "type": "string"
+                  },
+                  "id": {
+                    "$id": "/properties/fields/properties/components/items/properties/id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/components/items/properties/name",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "assignee": {
+              "$id": "/properties/fields/properties/assignee",
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "$id": "/properties/fields/properties/assignee/properties/displayName",
+                  "type": "string"
+                },
+                "active": {
+                  "$id": "/properties/fields/properties/assignee/properties/active",
+                  "type": "boolean"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/assignee/properties/self",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/assignee/properties/name",
+                  "type": "string"
+                },
+                "key": {
+                  "$id": "/properties/fields/properties/assignee/properties/key",
+                  "type": "string"
+                },
+                "emailAddress": {
+                  "$id": "/properties/fields/properties/assignee/properties/emailAddress",
+                  "type": "string",
+                  "title": "The Emailaddress Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "rosenville at gmail dot com"
+                  ]
+                }
+              }
+            },
+            "updated": {
+              "$id": "/properties/fields/properties/updated",
+              "type": "string"
+            },
+            "project": {
+              "$id": "/properties/fields/properties/project",
+              "type": "object",
+              "properties": {
+                "self": {
+                  "$id": "/properties/fields/properties/project/properties/self",
+                  "type": "string"
+                },
+                "key": {
+                  "$id": "/properties/fields/properties/project/properties/key",
+                  "type": "string"
+                },
+                "id": {
+                  "$id": "/properties/fields/properties/project/properties/id",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/project/properties/name",
+                  "type": "string"
+                }
+              }
+            },
+            "duedate": {
+              "$id": "/properties/fields/properties/duedate",
+              "type": "string"
+            },
+            "aggregatetimeoriginalestimate": {
+              "$id": "/properties/fields/properties/aggregatetimeoriginalestimate",
+              "type": "string"
+            },
+            "summary": {
+              "$id": "/properties/fields/properties/summary",
+              "type": "string"
+            },
+            "watches": {
+              "$id": "/properties/fields/properties/watches",
+              "type": "object",
+              "properties": {
+                "isWatching": {
+                  "$id": "/properties/fields/properties/watches/properties/isWatching",
+                  "type": "boolean"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/watches/properties/self",
+                  "type": "string"
+                },
+                "watchCount": {
+                  "$id": "/properties/fields/properties/watches/properties/watchCount",
+                  "type": "integer"
+                }
+              }
+            },
+            "description": {
+              "$id": "/properties/fields/properties/description",
+              "type": "string"
+            },
+            "progress": {
+              "$id": "/properties/fields/properties/progress",
+              "type": "object",
+              "properties": {
+                "progress": {
+                  "$id": "/properties/fields/properties/progress/properties/progress",
+                  "type": "integer"
+                },
+                "total": {
+                  "$id": "/properties/fields/properties/progress/properties/total",
+                  "type": "integer"
+                }
+              }
+            },
+            "status": {
+              "$id": "/properties/fields/properties/status",
+              "type": "object",
+              "properties": {
+                "description": {
+                  "$id": "/properties/fields/properties/status/properties/description",
+                  "type": "string"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/status/properties/self",
+                  "type": "string"
+                },
+                "id": {
+                  "$id": "/properties/fields/properties/status/properties/id",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/status/properties/name",
+                  "type": "string"
+                }
+              }
+            },
+            "aggregatetimespent": {
+              "$id": "/properties/fields/properties/aggregatetimespent",
+              "type": "string"
+            },
+            "issuetype": {
+              "$id": "/properties/fields/properties/issuetype",
+              "type": "object",
+              "properties": {
+                "description": {
+                  "$id": "/properties/fields/properties/issuetype/properties/description",
+                  "type": "string"
+                },
+                "subtask": {
+                  "$id": "/properties/fields/properties/issuetype/properties/subtask",
+                  "type": "boolean"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/issuetype/properties/self",
+                  "type": "string"
+                },
+                "id": {
+                  "$id": "/properties/fields/properties/issuetype/properties/id",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/issuetype/properties/name",
+                  "type": "string"
+                }
+              }
+            },
+            "reporter": {
+              "$id": "/properties/fields/properties/reporter",
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "$id": "/properties/fields/properties/reporter/properties/displayName",
+                  "type": "string"
+                },
+                "active": {
+                  "$id": "/properties/fields/properties/reporter/properties/active",
+                  "type": "boolean"
+                },
+                "self": {
+                  "$id": "/properties/fields/properties/reporter/properties/self",
+                  "type": "string"
+                },
+                "name": {
+                  "$id": "/properties/fields/properties/reporter/properties/name",
+                  "type": "string"
+                },
+                "key": {
+                  "$id": "/properties/fields/properties/reporter/properties/key",
+                  "type": "string"
+                },
+                "emailAddress": {
+                  "$id": "/properties/fields/properties/reporter/properties/emailAddress",
+                  "type": "string"
+                }
+              }
+            },
+            "fixVersions": {
+              "$id": "/properties/fields/properties/fixVersions",
+              "type": "array",
+              "items": {
+                "$id": "/properties/fields/properties/fixVersions/items",
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/description",
+                    "type": "string"
+                  },
+                  "archived": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/archived",
+                    "type": "boolean"
+                  },
+                  "releaseDate": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/releaseDate",
+                    "type": "string"
+                  },
+                  "released": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/released",
+                    "type": "boolean"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/self",
+                    "type": "string"
+                  },
+                  "id": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/fixVersions/items/properties/name",
+                    "type": "string"
+                  }
+                }
               }
             }
           }
-        },
-        "status": {
-          "type": "string"
-        },
-        "resolution": {
-          "type": "string"
-        },
-        "priority": {
-          "type": "string"
-        },
-        "assignee": {
-          "type": "string"
-        },
-        "reporter": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string"
-        },
-        "resolved": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "string"
-        },
-        "component": {
-          "type": "string"
-        },
-        "creator": {
-          "type": "string"
         }
       },
       "additionalProperties": false,

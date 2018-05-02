@@ -32,889 +32,411 @@
           },
           "fields": {
             "id": "/properties/fields",
+            "type": "object",
             "properties": {
-              "aggregateprogress": {
-                "id": "/properties/fields/properties/aggregateprogress",
-                "properties": {
-                  "progress": {
-                    "id": "/properties/fields/properties/aggregateprogress/properties/progress",
-                    "type": "integer"
-                  },
-                  "total": {
-                    "id": "/properties/fields/properties/aggregateprogress/properties/total",
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
-              },
-              "aggregatetimeestimate": {
-                "id": "/properties/fields/properties/aggregatetimeestimate",
-                "type": "null"
-              },
-              "aggregatetimeoriginalestimate": {
-                "id": "/properties/fields/properties/aggregatetimeoriginalestimate",
-                "type": "null"
-              },
-              "aggregatetimespent": {
-                "id": "/properties/fields/properties/aggregatetimespent",
-                "type": "null"
-              },
-              "assignee": {
-                "id": "/properties/fields/properties/assignee",
-                "properties": {
-                  "active": {
-                    "id": "/properties/fields/properties/assignee/properties/active",
-                    "type": "boolean"
-                  },
-                  "displayName": {
-                    "id": "/properties/fields/properties/assignee/properties/displayName",
-                    "type": "string"
-                  },
-                  "emailAddress": {
-                    "id": "/properties/fields/properties/assignee/properties/emailAddress",
-                    "type": "string"
-                  },
-                  "key": {
-                    "id": "/properties/fields/properties/assignee/properties/key",
-                    "type": "string"
-                  },
-                  "name": {
-                    "id": "/properties/fields/properties/assignee/properties/name",
-                    "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/assignee/properties/self",
-                    "type": "string"
-                  },
-                  "timeZone": {
-                    "id": "/properties/fields/properties/assignee/properties/timeZone",
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              },
-              "transitions": {
-                "items": {
-                  "properties": {
-                    "fields": {
-                      "properties": {
-                        "colour": {
-                          "properties": {
-                            "allowedValues": {
-                              "items": {
-                                "type": "string"
-                              },
-                              "type": "array"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "operations": {
-                              "items": {
-                                "type": "string"
-                              },
-                              "type": "array"
-                            },
-                            "required": {
-                              "type": "boolean"
-                            },
-                            "schema": {
-                              "properties": {
-                                "custom": {
-                                  "type": "string"
-                                },
-                                "customId": {
-                                  "type": "integer"
-                                },
-                                "items": {
-                                  "type": "string"
-                                },
-                                "type": {
-                                  "type": "string"
-                                }
-                              },
-                              "type": "object"
-                            }
-                          },
-                          "type": "object"
-                        },
-                        "summary": {
-                          "properties": {
-                            "allowedValues": {
-                              "items": {
-                                "type": "string"
-                              },
-                              "type": "array"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "operations": {
-                              "items": {
-                                "type": "string"
-                              },
-                              "type": "array"
-                            },
-                            "required": {
-                              "type": "boolean"
-                            },
-                            "schema": {
-                              "properties": {
-                                "custom": {
-                                  "type": "string"
-                                },
-                                "customId": {
-                                  "type": "integer"
-                                },
-                                "items": {
-                                  "type": "string"
-                                },
-                                "type": {
-                                  "type": "string"
-                                }
-                              },
-                              "type": "object"
-                            }
-                          },
-                          "type": "object"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "to": {
-                      "properties": {
-                        "description": {
-                          "type": "string"
-                        },
-                        "iconUrl": {
-                          "type": "string"
-                        },
-                        "id": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "self": {
-                          "type": "string"
-                        },
-                        "statusCategory": {
-                          "properties": {
-                            "colorName": {
-                              "type": "string"
-                            },
-                            "id": {
-                              "type": "integer"
-                            },
-                            "key": {
-                              "type": "string"
-                            },
-                            "self": {
-                              "type": "string"
-                            }
-                          },
-                          "type": "object"
-                        }
-                      },
-                      "type": "object"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "comments": {
-                "items": {
-                  "properties": {
-                    "author": {
-                      "properties": {
-                        "active": {
-                          "type": "boolean"
-                        },
-                        "avatarUrls": {
-                          "properties": {
-                            "16x16": {
-                              "type": "string"
-                            },
-                            "24x24": {
-                              "type": "string"
-                            },
-                            "32x32": {
-                              "type": "string"
-                            },
-                            "48x48": {
-                              "type": "string"
-                            }
-                          },
-                          "type": "object"
-                        },
-                        "displayName": {
-                          "type": "string"
-                        },
-                        "emailAddress": {
-                          "type": "string"
-                        },
-                        "key": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "self": {
-                          "type": "string"
-                        },
-                        "timeZone": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "body": {
-                      "type": "string"
-                    },
-                    "created": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "self": {
-                      "type": "string"
-                    },
-                    "updateAuthor": {
-                      "properties": {
-                        "active": {
-                          "type": "boolean"
-                        },
-                        "avatarUrls": {
-                          "properties": {
-                            "16x16": {
-                              "type": "string"
-                            },
-                            "24x24": {
-                              "type": "string"
-                            },
-                            "32x32": {
-                              "type": "string"
-                            },
-                            "48x48": {
-                              "type": "string"
-                            }
-                          },
-                          "type": "object"
-                        },
-                        "displayName": {
-                          "type": "string"
-                        },
-                        "emailAddress": {
-                          "type": "string"
-                        },
-                        "key": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "self": {
-                          "type": "string"
-                        },
-                        "timeZone": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "updated": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "components": {
-                "id": "/properties/fields/properties/components",
-                "items": {
-                  "id": "/properties/fields/properties/components/items",
-                  "properties": {
-                    "description": {
-                      "id": "/properties/fields/properties/components/items/properties/description",
-                      "type": "string"
-                    },
-                    "id": {
-                      "id": "/properties/fields/properties/components/items/properties/id",
-                      "type": "string"
-                    },
-                    "name": {
-                      "id": "/properties/fields/properties/components/items/properties/name",
-                      "type": "string"
-                    },
-                    "self": {
-                      "id": "/properties/fields/properties/components/items/properties/self",
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "created": {
-                "id": "/properties/fields/properties/created",
-                "type": "string"
-              },
-              "creator": {
-                "id": "/properties/fields/properties/creator",
-                "properties": {
-                  "active": {
-                    "id": "/properties/fields/properties/creator/properties/active",
-                    "type": "boolean"
-                  },
-                  "displayName": {
-                    "id": "/properties/fields/properties/creator/properties/displayName",
-                    "type": "string"
-                  },
-                  "emailAddress": {
-                    "id": "/properties/fields/properties/creator/properties/emailAddress",
-                    "type": "string"
-                  },
-                  "key": {
-                    "id": "/properties/fields/properties/creator/properties/key",
-                    "type": "string"
-                  },
-                  "name": {
-                    "id": "/properties/fields/properties/creator/properties/name",
-                    "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/creator/properties/self",
-                    "type": "string"
-                  },
-                  "timeZone": {
-                    "id": "/properties/fields/properties/creator/properties/timeZone",
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              },
-              "description": {
-                "id": "/properties/fields/properties/description",
-                "type": "string"
-              },
-              "duedate": {
-                "id": "/properties/fields/properties/duedate",
-                "type": "null"
-              },
-              "environment": {
-                "id": "/properties/fields/properties/environment",
-                "type": "null"
-              },
-              "fixVersions": {
-                "id": "/properties/fields/properties/fixVersions",
-                "items": {},
-                "type": "array"
-              },
-              "issuelinks": {
-                "id": "/properties/fields/properties/issuelinks",
-                "items": {
-                  "id": "/properties/fields/properties/issuelinks/items",
-                  "properties": {
-                    "id": {
-                      "id": "/properties/fields/properties/issuelinks/items/properties/id",
-                      "type": "string"
-                    },
-                    "outwardIssue": {
-                      "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue",
-                      "properties": {
-                        "fields": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields",
-                          "properties": {
-                            "issuetype": {
-                              "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype",
-                              "properties": {
-                                "description": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype/properties/description",
-                                  "type": "string"
-                                },
-                                "iconUrl": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype/properties/iconUrl",
-                                  "type": "string"
-                                },
-                                "id": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype/properties/id",
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype/properties/name",
-                                  "type": "string"
-                                },
-                                "self": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype/properties/self",
-                                  "type": "string"
-                                },
-                                "subtask": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/issuetype/properties/subtask",
-                                  "type": "boolean"
-                                }
-                              },
-                              "type": "object"
-                            },
-                            "priority": {
-                              "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/priority",
-                              "properties": {
-                                "iconUrl": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/priority/properties/iconUrl",
-                                  "type": "string"
-                                },
-                                "id": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/priority/properties/id",
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/priority/properties/name",
-                                  "type": "string"
-                                },
-                                "self": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/priority/properties/self",
-                                  "type": "string"
-                                }
-                              },
-                              "type": "object"
-                            },
-                            "status": {
-                              "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status",
-                              "properties": {
-                                "description": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/description",
-                                  "type": "string"
-                                },
-                                "iconUrl": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/iconUrl",
-                                  "type": "string"
-                                },
-                                "id": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/id",
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/name",
-                                  "type": "string"
-                                },
-                                "self": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/self",
-                                  "type": "string"
-                                },
-                                "statusCategory": {
-                                  "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/statusCategory",
-                                  "properties": {
-                                    "colorName": {
-                                      "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/statusCategory/properties/colorName",
-                                      "type": "string"
-                                    },
-                                    "id": {
-                                      "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/statusCategory/properties/id",
-                                      "type": "integer"
-                                    },
-                                    "key": {
-                                      "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/statusCategory/properties/key",
-                                      "type": "string"
-                                    },
-                                    "name": {
-                                      "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/statusCategory/properties/name",
-                                      "type": "string"
-                                    },
-                                    "self": {
-                                      "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/status/properties/statusCategory/properties/self",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "type": "object"
-                                }
-                              },
-                              "type": "object"
-                            },
-                            "summary": {
-                              "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/fields/properties/summary",
-                              "type": "string"
-                            }
-                          },
-                          "type": "object"
-                        },
-                        "id": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/id",
-                          "type": "string"
-                        },
-                        "key": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/key",
-                          "type": "string"
-                        },
-                        "self": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/outwardIssue/properties/self",
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "self": {
-                      "id": "/properties/fields/properties/issuelinks/items/properties/self",
-                      "type": "string"
-                    },
-                    "type": {
-                      "id": "/properties/fields/properties/issuelinks/items/properties/type",
-                      "properties": {
-                        "id": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/type/properties/id",
-                          "type": "string"
-                        },
-                        "inward": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/type/properties/inward",
-                          "type": "string"
-                        },
-                        "name": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/type/properties/name",
-                          "type": "string"
-                        },
-                        "outward": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/type/properties/outward",
-                          "type": "string"
-                        },
-                        "self": {
-                          "id": "/properties/fields/properties/issuelinks/items/properties/type/properties/self",
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "issuetype": {
-                "id": "/properties/fields/properties/issuetype",
+              "resolution": {
+                "$id": "/properties/fields/properties/resolution",
+                "type": "object",
                 "properties": {
                   "description": {
-                    "id": "/properties/fields/properties/issuetype/properties/description",
+                    "$id": "/properties/fields/properties/resolution/properties/description",
                     "type": "string"
                   },
-                  "iconUrl": {
-                    "id": "/properties/fields/properties/issuetype/properties/iconUrl",
+                  "self": {
+                    "$id": "/properties/fields/properties/resolution/properties/self",
                     "type": "string"
                   },
                   "id": {
-                    "id": "/properties/fields/properties/issuetype/properties/id",
+                    "$id": "/properties/fields/properties/resolution/properties/id",
                     "type": "string"
                   },
                   "name": {
-                    "id": "/properties/fields/properties/issuetype/properties/name",
+                    "$id": "/properties/fields/properties/resolution/properties/name",
                     "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/issuetype/properties/self",
-                    "type": "string"
-                  },
-                  "subtask": {
-                    "id": "/properties/fields/properties/issuetype/properties/subtask",
-                    "type": "boolean"
                   }
-                },
-                "type": "object"
+                }
               },
-              "labels": {
-                "id": "/properties/fields/properties/labels",
-                "items": {},
-                "type": "array"
+              "environment": {
+                "$id": "/properties/fields/properties/environment",
+                "type": "string"
+              },
+              "timeoriginalestimate": {
+                "$id": "/properties/fields/properties/timeoriginalestimate",
+                "type": "string"
               },
               "lastViewed": {
-                "id": "/properties/fields/properties/lastViewed",
+                "$id": "/properties/fields/properties/lastViewed",
+                "type": "string"
+              },
+              "subtasks": {
+                "$id": "/properties/fields/properties/subtasks",
+                "type": "array"
+              },
+              "aggregatetimeestimate": {
+                "$id": "/properties/fields/properties/aggregatetimeestimate",
                 "type": "string"
               },
               "priority": {
-                "id": "/properties/fields/properties/priority",
+                "$id": "/properties/fields/properties/priority",
+                "type": "object",
                 "properties": {
-                  "iconUrl": {
-                    "id": "/properties/fields/properties/priority/properties/iconUrl",
-                    "type": "string"
-                  },
-                  "id": {
-                    "id": "/properties/fields/properties/priority/properties/id",
+                  "self": {
+                    "$id": "/properties/fields/properties/priority/properties/self",
                     "type": "string"
                   },
                   "name": {
-                    "id": "/properties/fields/properties/priority/properties/name",
-                    "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/priority/properties/self",
+                    "$id": "/properties/fields/properties/priority/properties/name",
                     "type": "string"
                   }
-                },
-                "type": "object"
+                }
               },
-              "progress": {
-                "id": "/properties/fields/properties/progress",
-                "properties": {
-                  "progress": {
-                    "id": "/properties/fields/properties/progress/properties/progress",
-                    "type": "integer"
-                  },
-                  "total": {
-                    "id": "/properties/fields/properties/progress/properties/total",
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
-              },
-              "project": {
-                "id": "/properties/fields/properties/project",
-                "properties": {
-                  "id": {
-                    "id": "/properties/fields/properties/project/properties/id",
-                    "type": "string"
-                  },
-                  "key": {
-                    "id": "/properties/fields/properties/project/properties/key",
-                    "type": "string"
-                  },
-                  "name": {
-                    "id": "/properties/fields/properties/project/properties/name",
-                    "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/project/properties/self",
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              },
-              "reporter": {
-                "id": "/properties/fields/properties/reporter",
-                "properties": {
-                  "active": {
-                    "id": "/properties/fields/properties/reporter/properties/active",
-                    "type": "boolean"
-                  },
-                  "displayName": {
-                    "id": "/properties/fields/properties/reporter/properties/displayName",
-                    "type": "string"
-                  },
-                  "emailAddress": {
-                    "id": "/properties/fields/properties/reporter/properties/emailAddress",
-                    "type": "string"
-                  },
-                  "key": {
-                    "id": "/properties/fields/properties/reporter/properties/key",
-                    "type": "string"
-                  },
-                  "name": {
-                    "id": "/properties/fields/properties/reporter/properties/name",
-                    "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/reporter/properties/self",
-                    "type": "string"
-                  },
-                  "timeZone": {
-                    "id": "/properties/fields/properties/reporter/properties/timeZone",
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              },
-              "resolution": {
-                "id": "/properties/fields/properties/resolution",
-                "type": "null"
-              },
-              "resolutiondate": {
-                "id": "/properties/fields/properties/resolutiondate",
-                "type": "null"
-              },
-              "status": {
-                "id": "/properties/fields/properties/status",
-                "properties": {
-                  "description": {
-                    "id": "/properties/fields/properties/status/properties/description",
-                    "type": "string"
-                  },
-                  "iconUrl": {
-                    "id": "/properties/fields/properties/status/properties/iconUrl",
-                    "type": "string"
-                  },
-                  "id": {
-                    "id": "/properties/fields/properties/status/properties/id",
-                    "type": "string"
-                  },
-                  "name": {
-                    "id": "/properties/fields/properties/status/properties/name",
-                    "type": "string"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/status/properties/self",
-                    "type": "string"
-                  },
-                  "statusCategory": {
-                    "id": "/properties/fields/properties/status/properties/statusCategory",
-                    "properties": {
-                      "colorName": {
-                        "id": "/properties/fields/properties/status/properties/statusCategory/properties/colorName",
-                        "type": "string"
-                      },
-                      "id": {
-                        "id": "/properties/fields/properties/status/properties/statusCategory/properties/id",
-                        "type": "integer"
-                      },
-                      "key": {
-                        "id": "/properties/fields/properties/status/properties/statusCategory/properties/key",
-                        "type": "string"
-                      },
-                      "name": {
-                        "id": "/properties/fields/properties/status/properties/statusCategory/properties/name",
-                        "type": "string"
-                      },
-                      "self": {
-                        "id": "/properties/fields/properties/status/properties/statusCategory/properties/self",
-                        "type": "string"
-                      }
-                    },
-                    "type": "object"
-                  }
-                },
-                "type": "object"
-              },
-              "subtasks": {
-                "id": "/properties/fields/properties/subtasks",
-                "items": {},
-                "type": "array"
-              },
-              "summary": {
-                "id": "/properties/fields/properties/summary",
+              "timespent": {
+                "$id": "/properties/fields/properties/timespent",
                 "type": "string"
               },
               "timeestimate": {
-                "id": "/properties/fields/properties/timeestimate",
-                "type": "null"
-              },
-              "timeoriginalestimate": {
-                "id": "/properties/fields/properties/timeoriginalestimate",
-                "type": "null"
-              },
-              "timespent": {
-                "id": "/properties/fields/properties/timespent",
-                "type": "null"
-              },
-              "timetracking": {
-                "id": "/properties/fields/properties/timetracking",
-                "properties": {},
-                "type": "object"
-              },
-              "updated": {
-                "id": "/properties/fields/properties/updated",
+                "$id": "/properties/fields/properties/timeestimate",
                 "type": "string"
               },
-              "versions": {
-                "id": "/properties/fields/properties/versions",
-                "items": {
-                  "id": "/properties/fields/properties/versions/items",
-                  "properties": {
-                    "archived": {
-                      "id": "/properties/fields/properties/versions/items/properties/archived",
-                      "type": "boolean"
-                    },
-                    "id": {
-                      "id": "/properties/fields/properties/versions/items/properties/id",
-                      "type": "string"
-                    },
-                    "name": {
-                      "id": "/properties/fields/properties/versions/items/properties/name",
-                      "type": "string"
-                    },
-                    "releaseDate": {
-                      "id": "/properties/fields/properties/versions/items/properties/releaseDate",
-                      "type": "string"
-                    },
-                    "released": {
-                      "id": "/properties/fields/properties/versions/items/properties/released",
-                      "type": "boolean"
-                    },
-                    "self": {
-                      "id": "/properties/fields/properties/versions/items/properties/self",
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
+              "issuelinks": {
+                "$id": "/properties/fields/properties/issuelinks",
                 "type": "array"
               },
-              "votes": {
-                "id": "/properties/fields/properties/votes",
+              "resolutiondate": {
+                "$id": "/properties/fields/properties/resolutiondate",
+                "type": "string"
+              },
+              "creator": {
+                "$id": "/properties/fields/properties/creator",
+                "type": "object",
                 "properties": {
-                  "hasVoted": {
-                    "id": "/properties/fields/properties/votes/properties/hasVoted",
+                  "displayName": {
+                    "$id": "/properties/fields/properties/creator/properties/displayName",
+                    "type": "string"
+                  },
+                  "active": {
+                    "$id": "/properties/fields/properties/creator/properties/active",
                     "type": "boolean"
                   },
                   "self": {
-                    "id": "/properties/fields/properties/votes/properties/self",
+                    "$id": "/properties/fields/properties/creator/properties/self",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/creator/properties/name",
+                    "type": "string"
+                  },
+                  "key": {
+                    "$id": "/properties/fields/properties/creator/properties/key",
+                    "type": "string"
+                  },
+                  "emailAddress": {
+                    "$id": "/properties/fields/properties/creator/properties/emailAddress",
+                    "type": "string"
+                  }
+                }
+              },
+              "votes": {
+                "$id": "/properties/fields/properties/votes",
+                "type": "object",
+                "properties": {
+                  "hasVoted": {
+                    "$id": "/properties/fields/properties/votes/properties/hasVoted",
+                    "type": "boolean"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/votes/properties/self",
                     "type": "string"
                   },
                   "votes": {
-                    "id": "/properties/fields/properties/votes/properties/votes",
+                    "$id": "/properties/fields/properties/votes/properties/votes",
                     "type": "integer"
                   }
-                },
-                "type": "object"
+                }
               },
-              "watches": {
-                "id": "/properties/fields/properties/watches",
-                "properties": {
-                  "isWatching": {
-                    "id": "/properties/fields/properties/watches/properties/isWatching",
-                    "type": "boolean"
-                  },
-                  "self": {
-                    "id": "/properties/fields/properties/watches/properties/self",
-                    "type": "string"
-                  },
-                  "watchCount": {
-                    "id": "/properties/fields/properties/watches/properties/watchCount",
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
+              "labels": {
+                "$id": "/properties/fields/properties/labels",
+                "type": "array"
               },
-              "worklog": {
-                "id": "/properties/fields/properties/worklog",
+              "created": {
+                "$id": "/properties/fields/properties/created",
+                "type": "string"
+              },
+              "aggregateprogress": {
+                "$id": "/properties/fields/properties/aggregateprogress",
+                "type": "object",
                 "properties": {
-                  "maxResults": {
-                    "id": "/properties/fields/properties/worklog/properties/maxResults",
-                    "type": "integer"
-                  },
-                  "startAt": {
-                    "id": "/properties/fields/properties/worklog/properties/startAt",
+                  "progress": {
+                    "$id": "/properties/fields/properties/aggregateprogress/properties/progress",
                     "type": "integer"
                   },
                   "total": {
-                    "id": "/properties/fields/properties/worklog/properties/total",
+                    "$id": "/properties/fields/properties/aggregateprogress/properties/total",
                     "type": "integer"
-                  },
-                  "worklogs": {
-                    "id": "/properties/fields/properties/worklog/properties/worklogs",
-                    "items": {},
-                    "type": "array"
                   }
-                },
-                "type": "object"
+                }
               },
               "workratio": {
-                "id": "/properties/fields/properties/workratio",
+                "$id": "/properties/fields/properties/workratio",
                 "type": "integer"
+              },
+              "versions": {
+                "$id": "/properties/fields/properties/versions",
+                "type": "array"
+              },
+              "components": {
+                "$id": "/properties/fields/properties/components",
+                "type": "array",
+                "items": {
+                  "$id": "/properties/fields/properties/components/items",
+                  "type": "object",
+                  "properties": {
+                    "self": {
+                      "$id": "/properties/fields/properties/components/items/properties/self",
+                      "type": "string"
+                    },
+                    "id": {
+                      "$id": "/properties/fields/properties/components/items/properties/id",
+                      "type": "string"
+                    },
+                    "name": {
+                      "$id": "/properties/fields/properties/components/items/properties/name",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "assignee": {
+                "$id": "/properties/fields/properties/assignee",
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "$id": "/properties/fields/properties/assignee/properties/displayName",
+                    "type": "string"
+                  },
+                  "active": {
+                    "$id": "/properties/fields/properties/assignee/properties/active",
+                    "type": "boolean"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/assignee/properties/self",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/assignee/properties/name",
+                    "type": "string"
+                  },
+                  "key": {
+                    "$id": "/properties/fields/properties/assignee/properties/key",
+                    "type": "string"
+                  },
+                  "emailAddress": {
+                    "$id": "/properties/fields/properties/assignee/properties/emailAddress",
+                    "type": "string",
+                    "title": "The Emailaddress Schema.",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                      "rosenville at gmail dot com"
+                    ]
+                  }
+                }
+              },
+              "updated": {
+                "$id": "/properties/fields/properties/updated",
+                "type": "string"
+              },
+              "project": {
+                "$id": "/properties/fields/properties/project",
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "$id": "/properties/fields/properties/project/properties/self",
+                    "type": "string"
+                  },
+                  "key": {
+                    "$id": "/properties/fields/properties/project/properties/key",
+                    "type": "string"
+                  },
+                  "id": {
+                    "$id": "/properties/fields/properties/project/properties/id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/project/properties/name",
+                    "type": "string"
+                  }
+                }
+              },
+              "duedate": {
+                "$id": "/properties/fields/properties/duedate",
+                "type": "string"
+              },
+              "aggregatetimeoriginalestimate": {
+                "$id": "/properties/fields/properties/aggregatetimeoriginalestimate",
+                "type": "string"
+              },
+              "summary": {
+                "$id": "/properties/fields/properties/summary",
+                "type": "string"
+              },
+              "watches": {
+                "$id": "/properties/fields/properties/watches",
+                "type": "object",
+                "properties": {
+                  "isWatching": {
+                    "$id": "/properties/fields/properties/watches/properties/isWatching",
+                    "type": "boolean"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/watches/properties/self",
+                    "type": "string"
+                  },
+                  "watchCount": {
+                    "$id": "/properties/fields/properties/watches/properties/watchCount",
+                    "type": "integer"
+                  }
+                }
+              },
+              "description": {
+                "$id": "/properties/fields/properties/description",
+                "type": "string"
+              },
+              "progress": {
+                "$id": "/properties/fields/properties/progress",
+                "type": "object",
+                "properties": {
+                  "progress": {
+                    "$id": "/properties/fields/properties/progress/properties/progress",
+                    "type": "integer"
+                  },
+                  "total": {
+                    "$id": "/properties/fields/properties/progress/properties/total",
+                    "type": "integer"
+                  }
+                }
+              },
+              "status": {
+                "$id": "/properties/fields/properties/status",
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "$id": "/properties/fields/properties/status/properties/description",
+                    "type": "string"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/status/properties/self",
+                    "type": "string"
+                  },
+                  "id": {
+                    "$id": "/properties/fields/properties/status/properties/id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/status/properties/name",
+                    "type": "string"
+                  }
+                }
+              },
+              "aggregatetimespent": {
+                "$id": "/properties/fields/properties/aggregatetimespent",
+                "type": "string"
+              },
+              "issuetype": {
+                "$id": "/properties/fields/properties/issuetype",
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "$id": "/properties/fields/properties/issuetype/properties/description",
+                    "type": "string"
+                  },
+                  "subtask": {
+                    "$id": "/properties/fields/properties/issuetype/properties/subtask",
+                    "type": "boolean"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/issuetype/properties/self",
+                    "type": "string"
+                  },
+                  "id": {
+                    "$id": "/properties/fields/properties/issuetype/properties/id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/issuetype/properties/name",
+                    "type": "string"
+                  }
+                }
+              },
+              "reporter": {
+                "$id": "/properties/fields/properties/reporter",
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "$id": "/properties/fields/properties/reporter/properties/displayName",
+                    "type": "string"
+                  },
+                  "active": {
+                    "$id": "/properties/fields/properties/reporter/properties/active",
+                    "type": "boolean"
+                  },
+                  "self": {
+                    "$id": "/properties/fields/properties/reporter/properties/self",
+                    "type": "string"
+                  },
+                  "name": {
+                    "$id": "/properties/fields/properties/reporter/properties/name",
+                    "type": "string"
+                  },
+                  "key": {
+                    "$id": "/properties/fields/properties/reporter/properties/key",
+                    "type": "string"
+                  },
+                  "emailAddress": {
+                    "$id": "/properties/fields/properties/reporter/properties/emailAddress",
+                    "type": "string"
+                  }
+                }
+              },
+              "fixVersions": {
+                "$id": "/properties/fields/properties/fixVersions",
+                "type": "array",
+                "items": {
+                  "$id": "/properties/fields/properties/fixVersions/items",
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/description",
+                      "type": "string"
+                    },
+                    "archived": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/archived",
+                      "type": "boolean"
+                    },
+                    "releaseDate": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/releaseDate",
+                      "type": "string"
+                    },
+                    "released": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/released",
+                      "type": "boolean"
+                    },
+                    "self": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/self",
+                      "type": "string"
+                    },
+                    "id": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/id",
+                      "type": "string"
+                    },
+                    "name": {
+                      "$id": "/properties/fields/properties/fixVersions/items/properties/name",
+                      "type": "string"
+                    }
+                  }
+                }
               }
-            },
-            "type": "object"
+            }
           }
         },
         "required": [
