@@ -14,6 +14,10 @@
 1. Run `typings install` 
 1. Run `gulp serve`
 
+## Configuration
+1. Rename `.env.sample` to `.env`
+1. Change `SYNCPIPES_MONGO_DATABASE` in `.env` to your database name
+
 ## Docker support
 
 The application has build in [Docker](https://www.docker.com/) support. It also supports [docker-compose](https://github.com/docker/compose) to manage all dependencies.
