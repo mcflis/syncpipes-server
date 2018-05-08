@@ -1,8 +1,5 @@
 import * as stream from 'stream';
-import * as mysql from 'mysql';
 import * as SyncPipes from "../../app/index";
-import * as path from 'path';
-import { readFileSync } from 'fs';
 // config
 import { Configuration } from './Configuration'
 import 'node-rest-client';

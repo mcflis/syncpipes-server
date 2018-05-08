@@ -1,11 +1,11 @@
 version: '2'
 services:
-  app:
+  syncpipes-server:
     build: .
     ports:
       - "3010:3010"
     depends_on:
-      - mongo
+      - mongoforamelie
       - rabbit
     links:
       - mongo:mongo
@@ -19,11 +19,16 @@ services:
       SYNCPIPES_RABBIT_USER: guest
       SYNCPIPES_RABBIT_PASSWORD: guest
       SYNCPIPES_RABBIT_VHOST: '/'
+  mongoforamelie:
+    image: 'sebischair/amelie:mongoforamelie'
+    depends_on:
+      - mongo
+    links:
+      - mongo:mongo
   mongo:
-    image: mongo:latest
+    image: 'mongo:3.6.2'
     ports:
-      - "27017:27017"
-    command: --auth
+      - 27017:27017
   rabbit:
     image: rabbitmq:management
     ports:
