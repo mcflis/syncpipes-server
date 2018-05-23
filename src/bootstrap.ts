@@ -22,7 +22,8 @@ let kernel = new Kernel({
         "port": process.env.SYNCPIPES_MONGO_PORT || 27017,
         "user": process.env.SYNCPIPES_MONGO_USER || "guest",
         "password": process.env.SYNCPIPES_MONGO_PASSWORD || "guest",
-        "database": process.env.SYNCPIPES_MONGO_DATABASE || "syncpipes"
+        "database": process.env.SYNCPIPES_MONGO_DATABASE || "syncpipes",
+        "isAuth": process.env.SYNCPIPES_MONGO_AUTH || false
     },
     "rabbitmq": {
         "host": process.env.SYNCPIPES_RABBIT_HOST || "localhost",
