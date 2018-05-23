@@ -1,0 +1,491 @@
+{
+	"id": "64abc4d1-231e-5be6-67d7-9879e88bca0d",
+	"name": "SyncPipes",
+	"description": "",
+	"auth": null,
+	"events": null,
+	"variables": null,
+	"order": [],
+	"folders_order": [
+		"715e0cee-d551-9c6c-6a24-eae43f9127d7",
+		"95f3e239-7e51-6931-a689-361c52723e46",
+		"7b7fe688-734a-01b0-ca1e-fe7af452eb70"
+	],
+	"folders": [
+		{
+			"id": "715e0cee-d551-9c6c-6a24-eae43f9127d7",
+			"name": "Mapping",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "64abc4d1-231e-5be6-67d7-9879e88bca0d",
+			"folder": null,
+			"order": [
+				"8dd56cad-e4f9-6a6b-48b9-3d6f53a88cf4",
+				"70471c3b-abdc-5b6f-4a96-0c9da814f63c"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "95f3e239-7e51-6931-a689-361c52723e46",
+			"name": "Pipelines",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "64abc4d1-231e-5be6-67d7-9879e88bca0d",
+			"folder": null,
+			"order": [
+				"f17c7807-91e7-9b78-e8e0-210c76043534",
+				"4f3ab740-982f-67b1-510d-838285a35e03",
+				"3b0e2df1-6df9-682d-2f27-22ead41d5dba"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"name": "Services",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "64abc4d1-231e-5be6-67d7-9879e88bca0d",
+			"folder": null,
+			"order": [
+				"1b1e348b-f22a-f27d-af47-a54cbcee6ed0",
+				"316543bf-bd5f-5420-2fed-c5f1d24b2515",
+				"3974f301-3652-d2fd-d022-2ae9bf957a02",
+				"21403ddd-5e08-b7d2-0d3b-eddfc62464dc",
+				"de0a29de-5084-db9c-d7cd-1d38e0bf9017",
+				"50209969-5c00-4adf-b24d-a65b46d7be3b",
+				"dba05827-c488-6454-21ee-1600feb97fd9",
+				"3f6eb425-a53a-4625-24f3-3795ca435154",
+				"a8e37ca6-19e2-5ce4-a171-b1ac4b7c2d09",
+				"40c2fd15-453c-e0b3-6d8c-1908769d4541",
+				"9e8aa0ba-55e5-c860-0409-43a9c594b09f",
+				"a7e15849-ec12-ac23-a976-3496d1df85f4",
+				"3a060c9a-13c2-235a-4017-82fc7d5e8148"
+			],
+			"folders_order": []
+		}
+	],
+	"requests": [
+		{
+			"id": "1b1e348b-f22a-f27d-af47-a54cbcee6ed0",
+			"name": "List",
+			"url": "http://localhost:3010/api/v1/services",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"name\": \"MyMapping 2\",\n    \"extractorExtension\": \"GitHubIssueExtractorExtension\",\n    \"loaderExtension\": \"PureIssueLoader\",\n    \"entities\": [\n        {\n            \"from\": \"repository\",\n            \"to\": \"projects\",\n            \"attributes\": [\n                {\n                    \"from\": \"id\",\n                    \"to\": \"github_id\"\n                },\n                {\n                    \"from\": \"name\",\n                    \"to\": \"name\"\n                },\n                {\n                    \"from\": \"full_name\",\n                    \"to\": \"full_name\"\n                },\n                {\n                    \"from\": \"description\",\n                    \"to\": \"description\"\n                },\n                {\n                    \"from\": \"language\",\n                    \"to\": \"language\"\n                },\n                {\n                    \"from\": \"git_url\",\n                    \"to\": \"git_url\"\n                },\n                {\n                    \"from\": \"watcher_count\",\n                    \"to\": \"watcher_count\"\n                },\n                {\n                    \"from\": \"stars_count\",\n                    \"to\": \"stars_count\"\n                },\n                {\n                    \"from\": \"created_at\",\n                    \"to\": \"created_at\"\n                },\n                {\n                    \"from\": \"updated_at\",\n                    \"to\": \"updated_at\"\n                }\n            ]\n        }\n    ]\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "21403ddd-5e08-b7d2-0d3b-eddfc62464dc",
+			"name": "Config List",
+			"url": "http://localhost:3010/api/v1/services/RequirementsExcelExtractor/configs",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "316543bf-bd5f-5420-2fed-c5f1d24b2515",
+			"name": "View",
+			"url": "http://localhost:3010/api/v1/services/ExcelExtractor",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"name\": \"MyMapping 2\",\n    \"extractorExtension\": \"GitHubIssueExtractorExtension\",\n    \"loaderExtension\": \"PureIssueLoader\",\n    \"entities\": [\n        {\n            \"from\": \"repository\",\n            \"to\": \"projects\",\n            \"attributes\": [\n                {\n                    \"from\": \"id\",\n                    \"to\": \"github_id\"\n                },\n                {\n                    \"from\": \"name\",\n                    \"to\": \"name\"\n                },\n                {\n                    \"from\": \"full_name\",\n                    \"to\": \"full_name\"\n                },\n                {\n                    \"from\": \"description\",\n                    \"to\": \"description\"\n                },\n                {\n                    \"from\": \"language\",\n                    \"to\": \"language\"\n                },\n                {\n                    \"from\": \"git_url\",\n                    \"to\": \"git_url\"\n                },\n                {\n                    \"from\": \"watcher_count\",\n                    \"to\": \"watcher_count\"\n                },\n                {\n                    \"from\": \"stars_count\",\n                    \"to\": \"stars_count\"\n                },\n                {\n                    \"from\": \"created_at\",\n                    \"to\": \"created_at\"\n                },\n                {\n                    \"from\": \"updated_at\",\n                    \"to\": \"updated_at\"\n                }\n            ]\n        }\n    ]\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3974f301-3652-d2fd-d022-2ae9bf957a02",
+			"name": "Config Create",
+			"url": "http://localhost:3010/api/v1/services/GitHubIssueExtractor/configs",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"url\" : \"api.github.com\",\n        \"username\" : \"fridolin-koch\",\n        \"token\" : \"40664f7261fd345b384f936c3182b85fac863975\",\n        \"organisation\" : \"inversify\"\n    },\n    \"name\" : \"GitHub\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3a060c9a-13c2-235a-4017-82fc7d5e8148",
+			"name": "Create JiraIssueExtractor Config",
+			"url": "http://localhost:3010/api/v1/services/jiraIssueExtractor/configs",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n        \"config\": {\n            \"url\": \"issues.apache.org/jira\",\n            \"project\": \"SPARK\"\n        },\n        \"name\": \"Extract issues from jira - SPARK\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3b0e2df1-6df9-682d-2f27-22ead41d5dba",
+			"name": "Create Pipeline",
+			"url": "http://localhost:3010/api/v1/pipelines",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "95f3e239-7e51-6931-a689-361c52723e46",
+			"rawModeData": "{\n    \"name\": \"Issues into to SC - CSV\",\n    \"extractorConfig\": \"5968d6e444fb3c1fa464b76a\",\n    \"loaderConfig\": \"5968d71444fb3c1fa464b76b\",\n    \"mapping\": \"576937cbaa9cb6f8325b9b2b\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3f6eb425-a53a-4625-24f3-3795ca435154",
+			"name": "SocioCortexExtractor View",
+			"url": "http://localhost:3010/api/v1/services/SocioCortexExtractor",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"name\": \"MyMapping 2\",\n    \"extractorExtension\": \"GitHubIssueExtractorExtension\",\n    \"loaderExtension\": \"PureIssueLoader\",\n    \"entities\": [\n        {\n            \"from\": \"repository\",\n            \"to\": \"projects\",\n            \"attributes\": [\n                {\n                    \"from\": \"id\",\n                    \"to\": \"github_id\"\n                },\n                {\n                    \"from\": \"name\",\n                    \"to\": \"name\"\n                },\n                {\n                    \"from\": \"full_name\",\n                    \"to\": \"full_name\"\n                },\n                {\n                    \"from\": \"description\",\n                    \"to\": \"description\"\n                },\n                {\n                    \"from\": \"language\",\n                    \"to\": \"language\"\n                },\n                {\n                    \"from\": \"git_url\",\n                    \"to\": \"git_url\"\n                },\n                {\n                    \"from\": \"watcher_count\",\n                    \"to\": \"watcher_count\"\n                },\n                {\n                    \"from\": \"stars_count\",\n                    \"to\": \"stars_count\"\n                },\n                {\n                    \"from\": \"created_at\",\n                    \"to\": \"created_at\"\n                },\n                {\n                    \"from\": \"updated_at\",\n                    \"to\": \"updated_at\"\n                }\n            ]\n        }\n    ]\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "40c2fd15-453c-e0b3-6d8c-1908769d4541",
+			"name": "SocioCortexExtractor Config List",
+			"url": "http://localhost:3010/api/v1/services/SocioCortexExtractor/configs",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "4f3ab740-982f-67b1-510d-838285a35e03",
+			"name": "Exec Pipeline",
+			"url": "http://localhost:3010/api/v1/pipelines/59982cad3a8e543cb8d61d4a/actions/execute",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "95f3e239-7e51-6931-a689-361c52723e46",
+			"rawModeData": "",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "50209969-5c00-4adf-b24d-a65b46d7be3b",
+			"name": "Config Update",
+			"url": "http://localhost:3010/api/v1/services/RequirementsExcelExtractor/configs/57448bfb0bd28b64d4046c55",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "PUT",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "70471c3b-abdc-5b6f-4a96-0c9da814f63c",
+			"name": "List Mappings",
+			"url": "http://localhost:3010/api/v1/mappings",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "715e0cee-d551-9c6c-6a24-eae43f9127d7",
+			"rawModeData": "{\n    \"name\": \"GitHub Config\",\n    \"extension\": \"GitHubIssueExtractorExtension\",\n    \"data\": {\n        \"url\": \"api.github.com\",\n        \"username\": \"fridolin-koch\",\n        \"token\": \"40664f7261fd345b384f936c3182b85fac863975\",\n        \"organisation\": \"angular\"\n    }\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "8dd56cad-e4f9-6a6b-48b9-3d6f53a88cf4",
+			"name": "Create Mapping",
+			"url": "http://localhost:3010/api/v1/mappings/",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "715e0cee-d551-9c6c-6a24-eae43f9127d7",
+			"rawModeData": "{\n  \"name\": \"GitHub to MySQL\",\n  \"extractorService\": \"GitHubIssueExtractor\",\n  \"loaderService\": \"PureIssueLoader\",\n  \"groups\":  [\n    {\n      \"toPrefix\": \"projects/issues\",\n      \"properties\": [\n        {\n          \"fromPath\": \"issues/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/id\",\n          \"toType\": \"int\",\n          \"primaryKey\": true,\n          \"uniqueKey\": true,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"issues/title\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/title\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"issues/body\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/body\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"issues/project_id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/$foreignKey\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": true,\n          \"foreignKey\": \"projects/id\"\n        }\n      ]\n    },\n    {\n      \"toPrefix\": \"projects\",\n      \"properties\": [\n        {\n          \"_id\": null,\n          \"fromPath\": \"projects/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/id\",\n          \"toType\": \"int\",\n          \"primaryKey\": true,\n          \"uniqueKey\": true,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"projects/name\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/name\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        }\n      ]\n    },\n    {\n      \"toPrefix\": \"projects/issues/author\",\n      \"properties\": [\n        {\n          \"_id\": null,\n          \"fromPath\": \"issues/author_id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/author/id\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"issues/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/author/$foreignKey\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": \"projects/issues/id\"\n        }\n      ]\n    },\n    {\n      \"toPrefix\": \"projects/issues/comments\",\n      \"properties\": [\n        {\n          \"_id\": null,\n          \"fromPath\": \"comments/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/comments/id\",\n          \"toType\": \"int\",\n          \"primaryKey\": true,\n          \"uniqueKey\": true,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"comments/body\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/comments/body\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"comments/issue_id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/comments/$foreignKey\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": \"projects/issues/id\"\n        }\n      ]\n    },\n    {\n      \"toPrefix\": \"projects/issues/comments/author\",\n      \"properties\": [\n        {\n          \"_id\": null,\n          \"fromPath\": \"comments/author_id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/comments/author/id\",\n          \"toType\": \"int\",\n          \"primaryKey\": true,\n          \"uniqueKey\": true,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"comments/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/comments/author/$foreignKey\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": \"projects/issues/comments/id\"\n        }\n      ]\n    },\n    {\n      \"toPrefix\": \"projects/issues/author\",\n      \"properties\": [\n        {\n          \"_id\": null,\n          \"fromPath\": \"users/username\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/author/username\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"users/gender\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/author/gender\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"users/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/author/$foreignKey\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": \"projects/issues/author/id\"\n        }\n      ]\n    },\n    {\n      \"toPrefix\": \"projects/issues/comments/author\",\n      \"properties\": [\n        {\n          \"_id\": null,\n          \"fromPath\": \"users/username\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/comments/author/username\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"users/gender\",\n          \"fromType\": \"string\",\n          \"toPath\": \"projects/issues/comments/author/gender\",\n          \"toType\": \"string\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": null\n        },\n        {\n          \"_id\": null,\n          \"fromPath\": \"users/id\",\n          \"fromType\": \"int\",\n          \"toPath\": \"projects/issues/comments/author/$foreignKey\",\n          \"toType\": \"int\",\n          \"primaryKey\": false,\n          \"uniqueKey\": false,\n          \"foreignKey\": \"projects/issues/comments/author/id\"\n        }\n      ]\n    }\n    ]\n}\n",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "9e8aa0ba-55e5-c860-0409-43a9c594b09f",
+			"name": "SocioCortexExtractor Config View",
+			"url": "http://localhost:3010/api/v1/services/SocioCortexExtractor/configs/57448bfb0bd28b64d4046c55",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "a7e15849-ec12-ac23-a976-3496d1df85f4",
+			"name": "RequirementsExcelExtractor Config Create",
+			"url": "http://localhost:3010/api/v1/services/GitHubIssueExtractor/configs",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"qwerty\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "a8e37ca6-19e2-5ce4-a171-b1ac4b7c2d09",
+			"name": "SocioCortexExtractor Config Create",
+			"url": "http://localhost:3010/api/v1/services/SocioCortexExtractor/configs",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\": {\n        \"url\" : \"https://server.sociocortex.com/api/v1\",\n        \"username\" : \"manoj5864@gmail.com\",\n        \"password\" : \"@Sebis5864\"\n    },\n    \"name\" : \"SocioCortex\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "dba05827-c488-6454-21ee-1600feb97fd9",
+			"name": "Config Remove",
+			"url": "http://localhost:3010/api/v1/services/RequirementsExcelExtractor/configs/57448f2da6245f1ed8de0b4d",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "DELETE",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "de0a29de-5084-db9c-d7cd-1d38e0bf9017",
+			"name": "Config View",
+			"url": "http://localhost:3010/api/v1/services/RequirementsExcelExtractor/configs/57448bfb0bd28b64d4046c55",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "7b7fe688-734a-01b0-ca1e-fe7af452eb70",
+			"rawModeData": "{\n    \"config\" : {\n        \"host\" : \"localhost\",\n        \"port\" : \"3306\",\n        \"user\" : \"root\",\n        \"password\" : \"\",\n        \"database\" : \"syncpipes_requirements\"\n    },\n    \"name\" : \"MySQL Config Requirements\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "f17c7807-91e7-9b78-e8e0-210c76043534",
+			"name": "List",
+			"url": "http://localhost:3010/api/v1/pipelines",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "95f3e239-7e51-6931-a689-361c52723e46",
+			"rawModeData": "{\n    \"name\": \"GitHub Config\",\n    \"extension\": \"GitHubIssueExtractorExtension\",\n    \"data\": {\n        \"url\": \"api.github.com\",\n        \"username\": \"fridolin-koch\",\n        \"token\": \"40664f7261fd345b384f936c3182b85fac863975\",\n        \"organisation\": \"angular\"\n    }\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		}
+	]
+}
