@@ -1,7 +1,7 @@
-version: '2'
+version: '3'
 services:
   syncpipes-server:
-    build: .
+    image: 'sebischair/amelie:syncpipes-server'
     ports:
       - "3010:3010"
     depends_on:
@@ -11,9 +11,7 @@ services:
       - mongo:mongo
       - rabbit:rabbit
     environment:
-      SYNCPIPES_PORT: 3010
       SYNCPIPES_MONGO_HOST: 'mongo'
-      SYNCPIPES_MONGO_URL: 'mongodb://mongo/syncpipes'
       SYNCPIPES_RABBIT_HOST: rabbit
       SYNCPIPES_RABBIT_PORT: 5672
       SYNCPIPES_RABBIT_USER: guest
@@ -41,5 +39,3 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-
-

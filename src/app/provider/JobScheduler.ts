@@ -57,7 +57,7 @@ export class JobScheduler implements IJobScheduler {
                         resolve();
                     }).catch(this.handleError);
                 }).catch(this.handleError);
-            }, console.warn).catch(this.handleError);
+            }).catch(this.handleError);
         });
     }
 

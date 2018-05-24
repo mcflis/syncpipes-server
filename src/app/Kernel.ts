@@ -141,7 +141,7 @@ export class Kernel {
 
     private mongoUrl(): string {
         let url = 'mongodb://';
-        if (this.config.mongo.isAuth && this.config.mongo.password !== "" && this.config.mongo.user != "") {
+        if (this.config.mongo.isAuth !== "false" && this.config.mongo.password !== "" && this.config.mongo.user != "") {
             url += `${this.config.mongo.user}:${this.config.mongo.password}@`;
         }
         url += `${this.config.mongo.host}:${this.config.mongo.port}`;
