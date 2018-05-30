@@ -1,12 +1,10 @@
 import * as lodash from 'lodash'
-// helper for object access
 import * as ObjectAccess from './ObjectAccess';
 import { ObjectGraphNode } from './ObjectGraph';
 import { MappingTree } from './MappingTree';
 
 import { ISchema } from "../service/Schema";
-import { IMapping, Mapping } from "../model/Mapping";
-import {error} from "util";
+import { IMapping} from "../model/Mapping";
 
 interface IDestinationValue {
     to: string;
@@ -44,7 +42,6 @@ export class GraphTransformer {
         this.sourceSchema = sourceSchema;
         this.targetSchema = targetSchema;
         this.mapping = mapping;
-        // group mapping
         this.mappingGroups = this.groupMapping();
     }
 
@@ -53,10 +50,9 @@ export class GraphTransformer {
         // if (!this.sourceSchema.validateObject(data)) {
            // throw new Error('Schema validation error: ' + JSON.stringify(this.sourceSchema.getErrors(), null, '  '));
         // }
+
         // create graph from input data
-
         let graph = new ObjectGraphNode("_root");
-
         graph.insert(data);
         // target object
         let destObj = GraphTransformer.instantiateStructure(this.targetSchema.toObject(true));
@@ -296,7 +292,6 @@ export class GraphTransformer {
 
     extract(graph: Array<ObjectGraphNode>, mappingNode: MappingTree): Array<Array<IDestinationValue>> {
         let result = Array<Array<IDestinationValue>>();
-        // get direct
         for (let node of graph) {
             let destObjects = this.extractSingle(node, mappingNode);
             // handle children
@@ -304,15 +299,14 @@ export class GraphTransformer {
                 for (let childMapping of mappingNode.getChildren()) {
                     let subGraph = node.getNodeByPrefix(childMapping.getName());
                     let tmp = this.extract(subGraph, childMapping);
+                    tmp = [[].concat.apply([], tmp)];
                     for (let i = 0; i < tmp.length; i++) {
-                        if(destObjects.length > 0)
+                        if(destObjects.length > 0) {
                             Array.prototype.push.apply(tmp[i], destObjects);
-
-                        //tmp[i] = tmp[i].concat(destObjects);
+                            // clear object since it has been merged
+                            destObjects = [];
+                        }
                         result.push(tmp[i]);
-                        //Array.prototype.push.apply(result, tmp[i]);
-                        // clear object since it has been merged
-                        destObjects = [];
                     }
                 }
             }
@@ -339,9 +333,6 @@ export class GraphTransformer {
                         "primary": mapping.primaryKey,
                         "foreignKey": mapping.foreignKey
                     });
-                } else {
-                    //ignore if the source leaf node is unavailable
-                    //throw new Error(`Unable to get find leaf by name '${mapping.fromPath}' at path '${mappingNode.getName()}'`);
                 }
             }
         }
@@ -392,11 +383,9 @@ export class GraphTransformer {
     }
 
     static instantiateStructure(schema: any): Object {
-
         if (!schema.hasOwnProperty("type")) {
             return null;
         }
-
         let obj = null;
         switch (schema.type) {
             case 'object':
@@ -410,8 +399,6 @@ export class GraphTransformer {
                 obj = [];
                 break;
         }
-
         return obj;
     }
-
 }

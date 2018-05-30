@@ -64,10 +64,6 @@ export class JiraIssueExtractorService implements SyncPipes.IExtractorService {
                 password: this.config.password
             }
         });
-        //this.github.authenticate({
-        //    type: "oauth",
-        //    token: this.config.token
-        //});
         return Promise.resolve();
     }
 
