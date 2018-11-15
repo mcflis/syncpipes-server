@@ -96,6 +96,7 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
         this.stream = new stream.Writable({objectMode: true});
         this.stream._write = (chunk, encoding, callback) => {
             this.logger.debug("Data loading started", null);
+            // Get the keys in the chunks; do tis in a generic way, without referring to keys explicitly
             this.insertDocuments(chunk.projectCategories, "projectCategories")
                 .then(() => this.insertDocuments(chunk.projects, "projects"))
                 .then(() => this.insertDocuments(chunk.issues, "issues"))
