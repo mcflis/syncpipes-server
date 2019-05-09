@@ -103,10 +103,16 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
                 .then(() => this.insertDocuments(chunk.issues, "issues"))
                 .then(() => this.insertDocuments(chunk.decisionCategories, "decisionCategories"))
                 .then(() => this.insertDocuments(chunk.qualityAttributes, "qualityAttributes"))
-                .then(() => { this.closeDbConnection(); })
                 .then(() => callback())
                 .catch((err) => callback(err));
         };
+
+        const closeDb = () => {
+            this.closeDbConnection();
+        };
+
+        this.stream.on('finish', closeDb);
+        this.stream.on('error', closeDb);
 
         return this.stream;
     }
