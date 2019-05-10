@@ -7,7 +7,7 @@ import 'node-rest-client';
 /**
  * Load Contacts to Exchange
  */
-export class OutlookContactsLoaderService implements SyncPipes.ILoaderService {
+export class OutlookContactsLoaderService extends SyncPipes.BaseService implements SyncPipes.ILoaderService {
 
     /**
      * Extension config
@@ -45,6 +45,7 @@ export class OutlookContactsLoaderService implements SyncPipes.ILoaderService {
     private contactsUrl: string;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

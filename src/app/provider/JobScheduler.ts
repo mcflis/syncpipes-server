@@ -5,6 +5,7 @@ import { IServiceManager } from "./ServiceManager";
 import { PipelineExecution } from "../model/PipelineExecution";
 import { TrivialMapper } from "../service/Mapper";
 import { MongoLogger } from "../service/Logger";
+import { EventEmitter } from "events";
 
 export interface IJobSchedulerConfig {
     host: string;
@@ -72,6 +73,7 @@ export class JobScheduler implements IJobScheduler {
         }).then(() => {
             this.channel.consume(this.queueName, (msg) => {
                 // deserialize pipeline context
+                const serviceBus = new EventEmitter();
                 let context = PipelineContext.createFromJson(msg.content.toString());
                 // logger
                 let logger = new MongoLogger(context.executionID);
@@ -93,7 +95,9 @@ export class JobScheduler implements IJobScheduler {
                     logger.info(`Pipeline ${context.pipeline.name} started`);
                     // get extractor and loader
                     let extractor = <IExtractorService>this.services.get(context.pipeline.extractorConfig.service);
+                    extractor.setServiceBus(serviceBus);
                     let loader = <ILoaderService>this.services.get(context.pipeline.loaderConfig.service);
+                    loader.setServiceBus(serviceBus);
                     // set extractor config
                     let extractorConfig = extractor.getConfiguration();
                     if (extractorConfig != null) {

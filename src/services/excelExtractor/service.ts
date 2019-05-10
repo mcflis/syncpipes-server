@@ -5,7 +5,7 @@ import * as xlsx from 'xlsx';
 /**
  * Extracts Repositories and Issues from a github org
  */
-export class ExcelExtractorService implements SyncPipes.IExtractorService {
+export class ExcelExtractorService extends SyncPipes.BaseService implements SyncPipes.IExtractorService {
 
     /**
      * Execution context
@@ -33,6 +33,7 @@ export class ExcelExtractorService implements SyncPipes.IExtractorService {
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

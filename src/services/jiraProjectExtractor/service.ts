@@ -6,7 +6,7 @@ import { Configuration } from './Configuration';
 /**
  * Extracts Projects from a jira org
  */
-export class JiraProjectExtractorService implements SyncPipes.IExtractorService {
+export class JiraProjectExtractorService extends SyncPipes.BaseService implements SyncPipes.IExtractorService {
 
     /**
      * Extractor configuration
@@ -39,6 +39,7 @@ export class JiraProjectExtractorService implements SyncPipes.IExtractorService 
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

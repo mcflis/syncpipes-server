@@ -7,7 +7,7 @@ import { Configuration } from './Configuration'
 /**
  * RequirementsMySQLLoaderService
  */
-export class RequirementsMySQLLoaderService implements SyncPipes.ILoaderService {
+export class RequirementsMySQLLoaderService extends SyncPipes.BaseService implements SyncPipes.ILoaderService {
 
     private config: Configuration;
 
@@ -25,6 +25,7 @@ export class RequirementsMySQLLoaderService implements SyncPipes.ILoaderService 
     private logger: SyncPipes.ILogger;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

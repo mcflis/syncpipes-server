@@ -38,7 +38,7 @@ interface IRepository {
 /**
  * Extracts Repositories and Issues from a github org
  */
-export class GitHubIssueExtractorService implements SyncPipes.IExtractorService {
+export class GitHubIssueExtractorService extends SyncPipes.BaseService implements SyncPipes.IExtractorService {
 
     /**
      * Extractor configuration
@@ -71,6 +71,7 @@ export class GitHubIssueExtractorService implements SyncPipes.IExtractorService 
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

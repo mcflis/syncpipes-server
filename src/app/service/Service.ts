@@ -2,6 +2,7 @@ import * as stream from 'stream';
 import { ISchema } from './Schema';
 import { IPipeline } from "../model/Pipeline";
 import { ILogger } from "./Logger";
+import { EventEmitter } from 'events';
 
 export interface IServiceConfiguration {
     getSchema(): ISchema;
@@ -15,6 +16,7 @@ export interface IService extends IConfigSchema {
     setConfiguration(config: IServiceConfiguration): void;
     getSchema(): ISchema;
     prepare(context: IPipelineContext, logger: ILogger): Promise<any>;
+    setServiceBus(eventEmitter: EventEmitter): void;
 }
 
 export interface IConfigSchema {
@@ -23,6 +25,29 @@ export interface IConfigSchema {
 
 // Fetch vs. Pull vs. Active
 export enum ExtractorServiceType {Active, Passive}
+
+export enum ServiceBusEvent {
+    MostRecentlyUpdated
+}
+
+export function getServiceBusEventName(e: ServiceBusEvent): string {
+    return ServiceBusEvent[e];
+}
+
+export abstract class BaseService implements IService {
+    protected serviceBus: EventEmitter;
+    abstract getConfigSchema(config): Promise<ISchema>;
+    abstract getConfiguration(): IServiceConfiguration;
+    abstract getName(): string;
+    abstract getSchema(): ISchema;
+    abstract prepare(context: IPipelineContext, logger: ILogger): Promise<any>;
+    abstract setConfiguration(config: IServiceConfiguration): void;
+
+    setServiceBus(eventEmitter: EventEmitter): void {
+        this.serviceBus = eventEmitter;
+    }
+
+}
 
 export interface IExtractorService extends IService {
     extract(): stream.Readable;

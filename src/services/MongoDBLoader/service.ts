@@ -4,7 +4,7 @@ import {Configuration} from './Configuration';
 import mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 
-export class MongoDBLoaderService implements SyncPipes.ILoaderService {
+export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncPipes.ILoaderService {
 
     /**
      * Extension config
@@ -34,6 +34,7 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 
