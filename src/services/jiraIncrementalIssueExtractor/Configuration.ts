@@ -2,6 +2,14 @@ import { IServiceConfiguration, ISchema, Schema } from "../../app/index";
 /**
  * MySQL Configuration for this extension
  */
+interface StoredConfiguration {
+    url: string;
+    username: string;
+    password: string;
+    project: string;
+    lastUpdated: string;
+}
+
 export class Configuration implements IServiceConfiguration {
 
     private _url: string;
@@ -70,7 +78,7 @@ export class Configuration implements IServiceConfiguration {
         });
     }
 
-    store(): Object {
+    store(): StoredConfiguration {
         return {
             "url": this._url,
             "username": this._username,
@@ -80,7 +88,7 @@ export class Configuration implements IServiceConfiguration {
         };
     }
 
-    load({url, username, password, project, lastUpdated}): void {
+    load({url, username, password, project, lastUpdated}: StoredConfiguration): void {
         this._url = url;
         this._username = username;
         this._password = password;
