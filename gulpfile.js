@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var path = require('path');
 var ts = require('gulp-typescript');
+const sourcemaps = require('gulp-sourcemaps');
 var del = require('del');
 var runSequence = require('run-sequence');
 var gls = require('gulp-live-server');
@@ -10,9 +11,8 @@ var mocha = require('gulp-mocha');
 var config = {
   "buildDir":   "dist/",
   "tsOptions":  {
-    "target":                 "ES6",
+    "target":                 "es6",
     "module":                 "commonjs",
-    "sourceMap":              true,
     "emitDecoratorMetadata":  true,
     "experimentalDecorators": true,
     "removeComments":         false,
@@ -56,7 +56,9 @@ gulp.task('build', function (callback) {
 gulp.task('compile', function () {
   return gulp
     .src(config.files)
+    .pipe(sourcemaps.init())
     .pipe(ts(config.tsOptions))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(config.buildDir));
 });
 
