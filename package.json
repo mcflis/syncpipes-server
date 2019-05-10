@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Fridolin Jakob Koch",
   "license": "ISC",
+  "scripts": {
+    "nodemon:debug:server": "nodemon --config nodemon-debug-server.json",
+    "nodemon:debug:worker": "nodemon --config nodemon-debug-worker.json"
+  },
   "dependencies": {
     "ajv": "^4.0.6",
     "amqplib": "^0.4.1",
@@ -43,6 +47,7 @@
     "gulp-mocha": "^2.2.0",
     "gulp-sourcemaps": "1.6.0",
     "gulp-typescript": "2.10.0",
+    "nodemon": "1.19.0",
     "run-sequence": "1.1.5"
   }
 }
