@@ -2,12 +2,12 @@ import * as stream from 'stream';
 import jiraClient = require("jira-connector");
 import * as SyncPipes from "../../app/index";
 // config
-import {Configuration} from './Configuration'
+import {Configuration} from './Configuration';
 
 /**
  * Extracts Issues from a jira org
  */
-export class JiraIncrementalIssueExtractor implements SyncPipes.IExtractorService {
+export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService implements SyncPipes.IExtractorService {
 
     /**
      * Extractor configuration
@@ -40,6 +40,7 @@ export class JiraIncrementalIssueExtractor implements SyncPipes.IExtractorServic
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 
@@ -63,6 +64,18 @@ export class JiraIncrementalIssueExtractor implements SyncPipes.IExtractorServic
                 username: this.config.username,
                 password: this.config.password
             }
+        });
+        // TODO add error handling
+        this.serviceBus.on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
+            console.log('this.serviceBus.on', jiraIssueUpdatedField);
+            console.log('context.pipeline.extractorConfig.id', context.pipeline.extractorConfig._id);
+            const updatedConfig = this.config.store();
+            updatedConfig.lastUpdated = this.formatDate(jiraIssueUpdatedField);
+            SyncPipes.ServiceConfig.findByIdAndUpdate(context.pipeline.extractorConfig._id.toString(), {config: updatedConfig}, (err: any, res: any) => {
+                if (err) {
+                    this.logger.error(err);
+                }
+            })
         });
         return Promise.resolve();
     }
@@ -129,19 +142,19 @@ export class JiraIncrementalIssueExtractor implements SyncPipes.IExtractorServic
                     return;
                 }
 
-                let nextStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
+                let newStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
 
                 this.stream.push({"issues": fetchedIssues.issues});
-                this.logger.debug("Total number of issues: " + fetchedIssues.total);
-                this.logger.debug("Last number of fetched issues: " + fetchedIssues.issues.length);
-                this.logger.debug("next issue start: " + nextStartAt);
+                this.logger.debug(`Total number of issues: ${fetchedIssues.total}`);
+                this.logger.debug(`Last number of fetched issues: ${fetchedIssues.issues.length}`);
+                this.logger.debug(`start loading issues for next batch at: ${newStartAt}`);
 
-                if (nextStartAt >= fetchedIssues.total) {
+                if (newStartAt >= fetchedIssues.total) {
                     resolve();
                     this.stream.push(null);
                     return;
                 }
-                process.nextTick(this.fetchIssues.bind(this, nextStartAt, maxResults));
+                process.nextTick(this.fetchIssues.bind(this, newStartAt, maxResults));
                 resolve();
             });
         });
@@ -149,5 +162,15 @@ export class JiraIncrementalIssueExtractor implements SyncPipes.IExtractorServic
 
     updateConfigSchema(inputData: Array<Buffer>) {
         return null;
+    }
+
+    private formatDate(isoDate: string): string {
+        const d = new Date(isoDate);
+        const yyyy = d.getUTCFullYear();
+        const MM = `0${d.getUTCMonth() + 1}`.slice(-2);
+        const dd = `0${d.getUTCDate()}`.slice(-2);
+        const HH = `0${d.getUTCHours()}`.slice(-2);
+        const mm = `0${d.getUTCMinutes()}`.slice(-2);
+        return `${yyyy}-${MM}-${dd} ${HH}:${mm}`;
     }
 }
