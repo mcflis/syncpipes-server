@@ -97,6 +97,7 @@ export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncP
     load(): stream.Writable {
         this.stream = new stream.Writable({objectMode: true});
         this.stream._write = (chunk, encoding, callback) => {
+            const action: SyncPipes.ServiceBusEventAction = chunk.action;
             this.logger.debug("Data loading started", null);
             // Get the keys in the chunks; do tis in a generic way, without referring to keys explicitly
             this.insertDocuments(chunk.projectCategories, "projectCategories")
@@ -104,6 +105,11 @@ export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncP
                 .then(() => this.insertDocuments(chunk.issues, "issues"))
                 .then(() => this.insertDocuments(chunk.decisionCategories, "decisionCategories"))
                 .then(() => this.insertDocuments(chunk.qualityAttributes, "qualityAttributes"))
+                .then(() => {
+                    if (action) {
+                        this.getServiceBus().emit(action.name, action.data)
+                    }
+                })
                 .then(() => callback())
                 .catch((err) => callback(err));
         };

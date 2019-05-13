@@ -1,8 +1,10 @@
 import * as stream from 'stream';
-import jiraClient = require("jira-connector");
+import JiraClient = require('jira-connector');
 import * as SyncPipes from "../../app/index";
 // config
-import {Configuration} from './Configuration';
+import { Configuration } from './Configuration';
+import * as moment from "moment";
+import "moment-timezone";
 
 /**
  * Extracts Issues from a jira org
@@ -39,6 +41,11 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
      */
     private schema: SyncPipes.ISchema;
 
+    /**
+     * Authenticated user's timezone (from Jira)
+     */
+    private timeZone: string;
+
     constructor() {
         super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
@@ -52,13 +59,14 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
     getType(): SyncPipes.ExtractorServiceType {
         return SyncPipes.ExtractorServiceType.Active;
     }
+
 // "es6-promise": "registry:dt/es6-promise#0.0.0+20160726191732",
     prepare(context: SyncPipes.PipelineContext, logger: SyncPipes.ILogger): Promise<any> {
         this.context = context;
         this.config = new Configuration();
         this.logger = logger;
         this.config.load(context.pipeline.extractorConfig.config);
-        this.jira = new jiraClient({
+        this.jira = new JiraClient({
             host: this.config.url,
             basic_auth: {
                 username: this.config.username,
@@ -66,7 +74,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             }
         });
         // TODO add error handling
-        this.serviceBus.on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
+        this.getServiceBus().on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
             console.log('this.serviceBus.on', jiraIssueUpdatedField);
             console.log('context.pipeline.extractorConfig.id', context.pipeline.extractorConfig._id);
             const updatedConfig = this.config.store();
@@ -87,7 +95,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         };
 
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-        this.fetchIssues();
+        this.fetchTimeZone().then(() => this.fetchIssues());
 
         return this.stream;
     }
@@ -125,7 +133,18 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         });
     }
 
-    private fetchIssues(startAt: Number = 0, maxResults: Number = 50): Promise<void> {
+    private fetchTimeZone(): Promise<void> {
+        const guessedZone = moment.tz.guess();
+        return this.jira.myself.getMyself()
+            .then(myself => {
+                this.timeZone = myself.timeZone || guessedZone;
+            })
+            .catch(() => {
+                this.timeZone = guessedZone;
+            })
+    }
+
+    private fetchIssues(startAt: number = 0, maxResults: number = 50): Promise<void> {
         return new Promise<any>((resolve, reject) => {
             if (this.stream === null) {
                 throw new Error('No output stream available');
@@ -143,8 +162,9 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                 }
 
                 let newStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
+                const action = JiraIncrementalIssueExtractor.getAction(fetchedIssues.issues);
 
-                this.stream.push({"issues": fetchedIssues.issues});
+                this.stream.push({"issues": fetchedIssues.issues, action});
                 this.logger.debug(`Total number of issues: ${fetchedIssues.total}`);
                 this.logger.debug(`Last number of fetched issues: ${fetchedIssues.issues.length}`);
                 this.logger.debug(`start loading issues for next batch at: ${newStartAt}`);
@@ -165,12 +185,14 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
     }
 
     private formatDate(isoDate: string): string {
-        const d = new Date(isoDate);
-        const yyyy = d.getUTCFullYear();
-        const MM = `0${d.getUTCMonth() + 1}`.slice(-2);
-        const dd = `0${d.getUTCDate()}`.slice(-2);
-        const HH = `0${d.getUTCHours()}`.slice(-2);
-        const mm = `0${d.getUTCMinutes()}`.slice(-2);
-        return `${yyyy}-${MM}-${dd} ${HH}:${mm}`;
+        return moment(isoDate).tz(this.timeZone || moment.tz.guess()).format('YYYY-MM-DD HH:mm');
+    }
+
+    private static getAction(issues: any[]): SyncPipes.ServiceBusEventAction {
+        const latest = issues.map(i => i.fields.updated).sort().pop();
+        return latest ? {
+            name: SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated),
+            data: latest
+        } : null
     }
 }

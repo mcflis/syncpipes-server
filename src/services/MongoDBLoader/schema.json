@@ -3,6 +3,17 @@
   "description": "Schema for Mongo Issue Loader",
   "type": "object",
   "properties": {
+    "action": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "data": {
+          "type": ["string", "number", "integer", "boolean", "null", "array", "object"]
+        }
+      }
+    },
     "projects": {
       "type": "array",
       "items": {

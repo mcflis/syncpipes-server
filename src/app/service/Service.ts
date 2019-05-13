@@ -34,8 +34,13 @@ export function getServiceBusEventName(e: ServiceBusEvent): string {
     return ServiceBusEvent[e];
 }
 
+export interface ServiceBusEventAction {
+    name: string;
+    data: any;
+}
+
 export abstract class BaseService implements IService {
-    protected serviceBus: EventEmitter;
+    private _serviceBus: EventEmitter;
     abstract getConfigSchema(config): Promise<ISchema>;
     abstract getConfiguration(): IServiceConfiguration;
     abstract getName(): string;
@@ -43,8 +48,12 @@ export abstract class BaseService implements IService {
     abstract prepare(context: IPipelineContext, logger: ILogger): Promise<any>;
     abstract setConfiguration(config: IServiceConfiguration): void;
 
+    getServiceBus(): EventEmitter {
+        return this._serviceBus;
+    }
+
     setServiceBus(eventEmitter: EventEmitter): void {
-        this.serviceBus = eventEmitter;
+        this._serviceBus = eventEmitter;
     }
 
 }
