@@ -4,7 +4,11 @@
     "target": "es6",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ]
   },
   "compileOnSave": false,
   "exclude": []
