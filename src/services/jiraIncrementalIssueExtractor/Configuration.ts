@@ -8,6 +8,7 @@ interface StoredConfiguration {
     password: string;
     project: string;
     lastUpdated: string;
+    issueVersionFormat: string;
 }
 
 export class Configuration implements IServiceConfiguration {
@@ -21,6 +22,8 @@ export class Configuration implements IServiceConfiguration {
     private _project: string;
 
     private _lastUpdated: string;
+
+    private _issueVersionFormat: string;
 
     get url(): string {
         return this._url;
@@ -40,6 +43,10 @@ export class Configuration implements IServiceConfiguration {
 
     get lastUpdated(): string {
         return this._lastUpdated;
+    }
+
+    get issueVersionFormat(): string {
+        return this._issueVersionFormat;
     }
 
     getSchema(): ISchema {
@@ -66,6 +73,11 @@ export class Configuration implements IServiceConfiguration {
                 "lastUpdated": {
                     "type": "string",
                     "description": "Timestamp supported by the 'updated' field in Jira"
+                },
+                "issueVersionFormat": {
+                    "type": "string",
+                    "description": "",
+                    "default": "YYYYMMDD.HHmmss"
                 }
             },
             "additionalProperties": false,
@@ -74,6 +86,7 @@ export class Configuration implements IServiceConfiguration {
                 "username",
                 "password",
                 "project",
+                "issueVersionFormat",
             ]
         });
     }
@@ -84,15 +97,17 @@ export class Configuration implements IServiceConfiguration {
             "username": this._username,
             "password": this._password,
             "project": this._project,
-            "lastUpdated": this._lastUpdated
+            "lastUpdated": this._lastUpdated,
+            "issueVersionFormat": this._issueVersionFormat,
         };
     }
 
-    load({url, username, password, project, lastUpdated}: StoredConfiguration): void {
+    load({url, username, password, project, lastUpdated, issueVersionFormat}: StoredConfiguration): void {
         this._url = url;
         this._username = username;
         this._password = password;
         this._project = project;
-        this._lastUpdated = lastUpdated
+        this._lastUpdated = lastUpdated;
+        this._issueVersionFormat = issueVersionFormat;
     }
 }

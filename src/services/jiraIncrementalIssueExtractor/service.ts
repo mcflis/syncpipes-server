@@ -46,6 +46,11 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
      */
     private timeZone: string;
 
+    /**
+     * Issue version attached to each fetched issue to indicate snapshot version
+     */
+    private issueVersion: string;
+
     constructor() {
         super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
@@ -66,6 +71,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.config = new Configuration();
         this.logger = logger;
         this.config.load(context.pipeline.extractorConfig.config);
+        this.issueVersion = moment.utc().format(this.config.issueVersionFormat);
         this.jira = new JiraClient({
             host: this.config.url,
             basic_auth: {
@@ -162,12 +168,13 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                     return;
                 }
 
+                const issues = this.transformIssues(fetchedIssues.issues);
                 const newStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
-                const action = JiraIncrementalIssueExtractor.getAction(fetchedIssues.issues);
+                const action = JiraIncrementalIssueExtractor.getAction(issues);
 
-                this.stream.push({"issues": fetchedIssues.issues, action});
+                this.stream.push({"issues": issues, action});
                 this.logger.debug(`Total number of issues: ${fetchedIssues.total}`);
-                this.logger.debug(`Last number of fetched issues: ${fetchedIssues.issues.length}`);
+                this.logger.debug(`Last number of fetched issues: ${issues.length}`);
                 this.logger.debug(`start loading issues for next batch at: ${newStartAt}`);
 
                 if (newStartAt >= fetchedIssues.total) {
@@ -199,5 +206,12 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
 
     private static getLastUpdated(issues: any[]): string {
         return issues.map(i => i.fields.updated).sort().pop();
+    }
+
+    private transformIssues(issues: any[]): any[] {
+        return issues.map(issue => {
+            issue.version = this.issueVersion;
+            return issue;
+        })
     }
 }
