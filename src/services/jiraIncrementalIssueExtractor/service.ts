@@ -95,7 +95,8 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         };
 
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-        this.fetchTimeZone().then(() => this.fetchIssues());
+        const lastUpdated = this.config.lastUpdated || this.formatDate(new Date(0).toISOString());
+        this.fetchTimeZone().then(() => this.fetchIssues(lastUpdated));
 
         return this.stream;
     }
@@ -144,14 +145,14 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             })
     }
 
-    private fetchIssues(startAt: number = 0, maxResults: number = 50): Promise<void> {
+    private fetchIssues(lastUpdated: string, startAt: number = 0, maxResults: number = 50): Promise<void> {
         return new Promise<any>((resolve, reject) => {
             if (this.stream === null) {
                 throw new Error('No output stream available');
             }
 
             this.jira.search.search({
-                jql: `project="${this.config.project}" ORDER BY updated ASC`,
+                jql: `project="${this.config.project}" AND updated >= '${lastUpdated}' ORDER BY updated ASC`,
                 startAt,
                 maxResults
             }, (err, fetchedIssues) => {
@@ -161,7 +162,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                     return;
                 }
 
-                let newStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
+                const newStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
                 const action = JiraIncrementalIssueExtractor.getAction(fetchedIssues.issues);
 
                 this.stream.push({"issues": fetchedIssues.issues, action});
@@ -174,7 +175,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                     this.stream.push(null);
                     return;
                 }
-                process.nextTick(this.fetchIssues.bind(this, newStartAt, maxResults));
+                process.nextTick(this.fetchIssues.bind(this, lastUpdated, newStartAt, maxResults));
                 resolve();
             });
         });
@@ -189,10 +190,14 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
     }
 
     private static getAction(issues: any[]): SyncPipes.ServiceBusEventAction {
-        const latest = issues.map(i => i.fields.updated).sort().pop();
+        const latest = JiraIncrementalIssueExtractor.getLastUpdated(issues);
         return latest ? {
             name: SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated),
             data: latest
         } : null
+    }
+
+    private static getLastUpdated(issues: any[]): string {
+        return issues.map(i => i.fields.updated).sort().pop();
     }
 }
