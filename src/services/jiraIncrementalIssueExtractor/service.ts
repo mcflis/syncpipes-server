@@ -196,7 +196,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         return moment(isoDate).tz(this.timeZone || moment.tz.guess()).format('YYYY-MM-DD HH:mm');
     }
 
-    private static getAction(issues: any[]): SyncPipes.ServiceBusEventAction {
+    private static getAction(issues: any[]): SyncPipes.ServiceBusMessage {
         const latest = JiraIncrementalIssueExtractor.getLastUpdated(issues);
         return latest ? {
             name: SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated),

@@ -34,9 +34,11 @@ export function getServiceBusEventName(e: ServiceBusEvent): string {
     return ServiceBusEvent[e];
 }
 
-export interface ServiceBusEventAction {
-    name: string;
-    data: any;
+export interface ServiceBusMessage {
+    notify?: {
+        name: string;
+        data: any;
+    }
 }
 
 export abstract class BaseService implements IService {
