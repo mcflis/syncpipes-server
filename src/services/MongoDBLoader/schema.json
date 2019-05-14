@@ -3,14 +3,19 @@
   "description": "Schema for Mongo Issue Loader",
   "type": "object",
   "properties": {
-    "action": {
+    "message": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "data": {
-          "type": ["string", "number", "integer", "boolean", "null", "array", "object"]
+        "notify": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "data": {
+              "type": ["string", "number", "integer", "boolean", "null", "array", "object"]
+            }
+          }
         }
       }
     },

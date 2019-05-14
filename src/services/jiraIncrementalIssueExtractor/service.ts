@@ -170,9 +170,9 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
 
                 const issues = this.transformIssues(fetchedIssues.issues);
                 const newStartAt = fetchedIssues.maxResults + fetchedIssues.startAt;
-                const action = JiraIncrementalIssueExtractor.getAction(issues);
+                const message = JiraIncrementalIssueExtractor.createServiceBusMessage(issues);
 
-                this.stream.push({"issues": issues, action});
+                this.stream.push({issues, message});
                 this.logger.debug(`Total number of issues: ${fetchedIssues.total}`);
                 this.logger.debug(`Last number of fetched issues: ${issues.length}`);
                 this.logger.debug(`start loading issues for next batch at: ${newStartAt}`);
@@ -196,11 +196,13 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         return moment(isoDate).tz(this.timeZone || moment.tz.guess()).format('YYYY-MM-DD HH:mm');
     }
 
-    private static getAction(issues: any[]): SyncPipes.ServiceBusMessage {
+    private static createServiceBusMessage(issues: any[]): SyncPipes.ServiceBusMessage {
         const latest = JiraIncrementalIssueExtractor.getLastUpdated(issues);
         return latest ? {
-            name: SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated),
-            data: latest
+            notify: {
+                name: SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated),
+                data: latest
+            }
         } : null
     }
 
