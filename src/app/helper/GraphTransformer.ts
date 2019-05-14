@@ -142,7 +142,7 @@ export class GraphTransformer {
                     }
                     if (insert) {
                         // insert data
-                        currentNode = tmp;
+                        Object.assign(currentNode, tmp);
                     }
 
                 } else if (lodash.isArray(currentNode)) {
