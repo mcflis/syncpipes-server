@@ -3,6 +3,7 @@ import { ISchema } from './Schema';
 import { IPipeline } from "../model/Pipeline";
 import { ILogger } from "./Logger";
 import { EventEmitter } from 'events';
+import mongodb = require('mongodb');
 
 export interface IServiceConfiguration {
     getSchema(): ISchema;
@@ -34,11 +35,21 @@ export function getServiceBusEventName(e: ServiceBusEvent): string {
     return ServiceBusEvent[e];
 }
 
+type MongoDBFilterFunction = (db: mongodb.Db, newDocuments: any[]) => Promise<any[]>;
+export type FilterFunction = MongoDBFilterFunction;
+
+export interface ServiceBusMessageNotification {
+    name: string;
+    data: any;
+}
+
+export interface DocumentFilter {
+    [key: string]: FilterFunction;
+}
+
 export interface ServiceBusMessage {
-    notify?: {
-        name: string;
-        data: any;
-    }
+    notify?: ServiceBusMessageNotification
+    filter?: DocumentFilter
 }
 
 export abstract class BaseService implements IService {
