@@ -208,6 +208,9 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             notify: {
                 name: SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated),
                 data: latest
+            },
+            filter: {
+                'issues': SyncPipes.Filters.jiraIssueMongoDBFilter
             }
         } : null
     }

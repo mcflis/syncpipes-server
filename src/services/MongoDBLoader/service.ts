@@ -11,7 +11,7 @@ export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncP
      */
     private config: Configuration;
 
-    private dbConnection: any = null;
+    private dbConnection: mongodb.Db = null;
 
     /**
      * Workflow context
@@ -102,7 +102,7 @@ export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncP
             // Get the keys in the chunks; do tis in a generic way, without referring to keys explicitly
             this.insertDocuments(chunk.projectCategories, "projectCategories")
                 .then(() => this.insertDocuments(chunk.projects, "projects"))
-                .then(() => this.insertDocuments(chunk.issues, "issues"))
+                .then(() => this.filterDocuments(chunk.issues, "issues", serviceBusMessage).then(docs => this.insertDocuments(docs, "issues")))
                 .then(() => this.insertDocuments(chunk.decisionCategories, "decisionCategories"))
                 .then(() => this.insertDocuments(chunk.qualityAttributes, "qualityAttributes"))
                 .then(() => {
@@ -163,6 +163,16 @@ export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncP
                 reject();
             }
         });
+    }
+
+    filterDocuments(documents: any[], collectionName: string, message?: SyncPipes.ServiceBusMessage): Promise<any[]> {
+        if (documents.length < 1 || !message || !message.filter) {
+            return Promise.resolve(documents);
+        }
+        if (!this.dbConnection) {
+            return Promise.reject('Db connection is not available');
+        }
+        return message.filter[collectionName](this.dbConnection, documents);
     }
 
     // Get the count of all documents in the collection.
