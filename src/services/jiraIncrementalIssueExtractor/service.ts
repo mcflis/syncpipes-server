@@ -49,7 +49,12 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
     /**
      * Issue version attached to each fetched issue to indicate snapshot version
      */
-    private issueVersion: string;
+    private issueVersion: number;
+
+    /**
+     * Utc timestamp of the moment when this issue was seen
+     */
+    private seenUtc: string;
 
     constructor() {
         super();
@@ -71,7 +76,8 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.config = new Configuration();
         this.logger = logger;
         this.config.load(context.pipeline.extractorConfig.config);
-        this.issueVersion = moment.utc().format(this.config.issueVersionFormat);
+        this.issueVersion = 1;
+        this.seenUtc = moment.utc().toISOString();
         this.jira = new JiraClient({
             host: this.config.url,
             basic_auth: {
@@ -213,6 +219,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
     private transformIssues(issues: any[]): any[] {
         return issues.map(issue => {
             issue.version = this.issueVersion;
+            issue.seen = this.seenUtc;
             return issue;
         })
     }
