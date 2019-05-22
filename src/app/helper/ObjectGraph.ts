@@ -4,6 +4,7 @@ interface IObjectGraph {
     getName(): string;
     getParent(): IObjectGraph;
     toJSON(): Object;
+    getAbsolutePath(): string;
 }
 
 export class ObjectGraphNode implements IObjectGraph {
@@ -174,6 +175,13 @@ export class ObjectGraphNode implements IObjectGraph {
 
     };
 
+    getAbsolutePath(): string {
+        const parent = this.getParent();
+        if (parent) {
+            return `${parent.getAbsolutePath()}/${this.getName()}`
+        }
+        return this.getName();
+    }
 }
 
 export class ObjectGraphLeaf implements IObjectGraph {
@@ -210,4 +218,23 @@ export class ObjectGraphLeaf implements IObjectGraph {
         };
     }
 
+    getAbsolutePath(): string {
+        const parent = this.getParent();
+        if (parent) {
+            return `${parent.getAbsolutePath()}/${this.getName()}`
+        }
+        return this.getName();
+    }
+
+    resolveToPath(toPath: string) {
+        const matches = this.getAbsolutePath().match(/\[[0-9]+]/g);
+        if (!matches) {
+            return toPath;
+        }
+        const toPathTokens = toPath.split('[]').reverse();
+        const relevantMatches = matches.slice(matches.length - toPathTokens.length + 1, matches.length);
+        return toPathTokens.reduce((newPath, current) => {
+            return `${relevantMatches.pop() || ''}${current}${newPath}`
+        }, '');
+    }
 }
