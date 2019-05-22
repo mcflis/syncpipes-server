@@ -70,25 +70,25 @@ export function where(src: Object, path: string, wherePath: string, whereValue: 
     return result;
 }
 
-export function mergeSparseArrays(objValue: any, srcValue: any): any {
-    if (lodash.isArray(objValue)) {
-        const srcObjIndex = srcValue.findIndex(obj => obj);
-        const srcObj = srcValue[srcObjIndex];
+export function mergeSparseArrays(targetArray: any, srcArray: any): any {
+    if (lodash.isArray(targetArray)) {
+        const srcObjIndex = srcArray.findIndex(obj => obj);
+        const srcObj = srcArray[srcObjIndex];
         const newProp = Object.keys(srcObj).pop();
         if (!newProp) {
             throw new Error('srcObj doesn\'t have any properties')
         }
-        const index = objValue.findIndex(obj => obj && !obj.hasOwnProperty(newProp));
-        if (index > -1) {
-            objValue[index] = Object.assign({}, objValue[index], srcObj);
-            return objValue;
+        const targetIndex = targetArray.findIndex(obj => obj && !obj.hasOwnProperty(newProp));
+        if (targetIndex > -1) {
+            targetArray[targetIndex] = Object.assign({}, targetArray[targetIndex], srcObj);
+            return targetArray;
         }
-        const targetObj = objValue.find((obj, index) => index === srcObjIndex && obj && obj.hasOwnProperty(newProp));
+        const targetObj = targetArray.find((obj, index) => index === srcObjIndex && obj && obj.hasOwnProperty(newProp));
         if (targetObj && typeof srcObj[newProp] === 'object') {
-            objValue[srcObjIndex] = lodash.mergeWith(objValue[srcObjIndex], srcObj, mergeSparseArrays);
-            return objValue;
+            targetArray[srcObjIndex] = lodash.mergeWith(targetArray[srcObjIndex], srcObj, mergeSparseArrays);
+            return targetArray;
         }
-        objValue[srcObjIndex] = srcObj;
-        return objValue;
+        targetArray[srcObjIndex] = srcObj;
+        return targetArray;
     }
 }
