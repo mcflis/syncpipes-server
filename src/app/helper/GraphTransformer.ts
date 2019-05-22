@@ -120,11 +120,20 @@ export class GraphTransformer {
                     if(obj.to.split('/').length > 1) {
                         let value = obj.value;
                         for(let i of obj.to.split('/').reverse()) {
+                            const pattern = /\[([0-9]+)]$/;
+                            const isArray = i.match(pattern);
+                            const arrIndex = isArray ? parseInt(isArray[1], 10) : -1;
+                            const key = isArray ? i.substr(0, isArray.index) : i;
                             let data = {};
-                            data[i] = value;
+                            if (isArray) {
+                                data[key] = [];
+                                data[key][arrIndex] = value;
+                            } else {
+                                data[key] = value;
+                            }
                             value = data;
                         }
-                        tmp = lodash.merge(tmp,value);
+                        tmp = lodash.mergeWith(tmp,value, ObjectAccess.mergeSparseArrays);
                     } else tmp[obj.to] = obj.value;
                 }
                 if (lodash.isPlainObject(currentNode)) {
@@ -327,7 +336,7 @@ export class GraphTransformer {
                 // set value to destination object
                 if (leaf !== null) {
                     destObjects.push({
-                        "to": mapping.toPath,
+                        "to": leaf.resolveToPath(mapping.toPath),
                         "value": leaf.getValue(),
                         "unique": mapping.uniqueKey,
                         "primary": mapping.primaryKey,
