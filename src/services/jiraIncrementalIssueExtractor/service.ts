@@ -79,7 +79,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.issueVersion = 1;
         this.seenUtc = moment.utc().toISOString();
         this.jira = new JiraClient({
-            host: this.config.url,
+            host: this.config.host,
             basic_auth: {
                 username: this.config.username,
                 password: this.config.password

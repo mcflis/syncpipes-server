@@ -3,7 +3,9 @@ import { IServiceConfiguration, ISchema, Schema } from "../../app/index";
  * MySQL Configuration for this extension
  */
 interface StoredConfiguration {
-    url: string;
+    host: string;
+    port: number;
+    pathPrefix: string;
     username: string;
     password: string;
     project: string;
@@ -12,7 +14,11 @@ interface StoredConfiguration {
 
 export class Configuration implements IServiceConfiguration {
 
-    private _url: string;
+    private _host: string;
+
+    private _port: number;
+
+    private _pathPrefix: string;
 
     private _username: string;
 
@@ -23,8 +29,16 @@ export class Configuration implements IServiceConfiguration {
     private _lastUpdated: string;
 
 
-    get url(): string {
-        return this._url;
+    get host(): string {
+        return this._host;
+    }
+
+    get port(): number {
+        return this._port;
+    }
+
+    get pathPrefix(): string {
+        return this._pathPrefix;
     }
 
     get username(): string {
@@ -48,9 +62,17 @@ export class Configuration implements IServiceConfiguration {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "type": "object",
             "properties": {
-                "url": {
+                "host": {
                     "type": "string",
-                    "description": "Url"
+                    "description": "Host"
+                },
+                "port": {
+                    "type": "integer",
+                    "description": "Port"
+                },
+                "pathPrefix": {
+                    "type": "string",
+                    "description": "Path prefix pointing to Jira Document Root"
                 },
                 "username": {
                     "type": "string",
@@ -58,7 +80,7 @@ export class Configuration implements IServiceConfiguration {
                 },
                 "password": {
                     "type": "string",
-                    "description": "Jira password",
+                    "description": "Jira password or Target set in auth proxy",
                 },
                 "project": {
                     "type": "string",
@@ -71,9 +93,8 @@ export class Configuration implements IServiceConfiguration {
             },
             "additionalProperties": false,
             "required": [
-                "url",
+                "host",
                 "username",
-                "password",
                 "project"
             ]
         });
@@ -81,7 +102,9 @@ export class Configuration implements IServiceConfiguration {
 
     store(): StoredConfiguration {
         return {
-            "url": this._url,
+            "host": this._host,
+            "port": this._port,
+            "pathPrefix": this._pathPrefix,
             "username": this._username,
             "password": this._password,
             "project": this._project,
@@ -89,8 +112,10 @@ export class Configuration implements IServiceConfiguration {
         };
     }
 
-    load({url, username, password, project, lastUpdated}: StoredConfiguration): void {
-        this._url = url;
+    load({host, port, pathPrefix, username, password, project, lastUpdated}: StoredConfiguration): void {
+        this._host = host;
+        this._port = port;
+        this._pathPrefix = pathPrefix;
         this._username = username;
         this._password = password;
         this._project = project;
