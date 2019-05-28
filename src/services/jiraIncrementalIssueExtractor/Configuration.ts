@@ -4,10 +4,9 @@ import { IServiceConfiguration, ISchema, Schema } from "../../app/index";
  */
 interface StoredConfiguration {
     host: string;
-    port: number;
-    pathPrefix: string;
     username: string;
     password: string;
+    jiraHost: string;
     project: string;
     lastUpdated: string;
 }
@@ -16,13 +15,14 @@ export class Configuration implements IServiceConfiguration {
 
     private _host: string;
 
-    private _port: number;
-
-    private _pathPrefix: string;
-
     private _username: string;
 
+    /**
+     * @deprecated
+     */
     private _password: string;
+
+    private _jiraHost: string;
 
     private _project: string;
 
@@ -33,20 +33,20 @@ export class Configuration implements IServiceConfiguration {
         return this._host;
     }
 
-    get port(): number {
-        return this._port;
-    }
-
-    get pathPrefix(): string {
-        return this._pathPrefix;
-    }
-
     get username(): string {
         return this._username;
     }
 
+    /**
+     * Password is not encrypted in database. Use {@link Configuration#jiraHost}
+     * @deprecated
+     */
     get password(): string {
         return this._password;
+    }
+
+    get jiraHost(): string {
+        return this._jiraHost;
     }
 
     get project(): string {
@@ -66,21 +66,17 @@ export class Configuration implements IServiceConfiguration {
                     "type": "string",
                     "description": "Host"
                 },
-                "port": {
-                    "type": "integer",
-                    "description": "Port"
-                },
-                "pathPrefix": {
-                    "type": "string",
-                    "description": "Path prefix pointing to Jira Document Root"
-                },
                 "username": {
                     "type": "string",
                     "description": "Jira username",
                 },
                 "password": {
                     "type": "string",
-                    "description": "Jira password or Target set in auth proxy",
+                    "description": "Jira password",
+                },
+                "jiraHost": {
+                    "type": "string",
+                    "description": "Target set in auth proxy",
                 },
                 "project": {
                     "type": "string",
@@ -103,21 +99,19 @@ export class Configuration implements IServiceConfiguration {
     store(): StoredConfiguration {
         return {
             "host": this._host,
-            "port": this._port,
-            "pathPrefix": this._pathPrefix,
             "username": this._username,
             "password": this._password,
+            "jiraHost": this._jiraHost,
             "project": this._project,
             "lastUpdated": this._lastUpdated
         };
     }
 
-    load({host, port, pathPrefix, username, password, project, lastUpdated}: StoredConfiguration): void {
+    load({host, username, password, jiraHost, project, lastUpdated}: StoredConfiguration): void {
         this._host = host;
-        this._port = port;
-        this._pathPrefix = pathPrefix;
         this._username = username;
         this._password = password;
+        this._jiraHost = jiraHost;
         this._project = project;
         this._lastUpdated = lastUpdated;
     }
