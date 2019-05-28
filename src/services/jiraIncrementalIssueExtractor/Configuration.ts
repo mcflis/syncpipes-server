@@ -3,7 +3,7 @@ import { IServiceConfiguration, ISchema, Schema } from "../../app/index";
  * MySQL Configuration for this extension
  */
 interface StoredConfiguration {
-    host: string;
+    url: string;
     username: string;
     password: string;
     jiraHost: string;
@@ -13,7 +13,7 @@ interface StoredConfiguration {
 
 export class Configuration implements IServiceConfiguration {
 
-    private _host: string;
+    private _url: string;
 
     private _username: string;
 
@@ -29,8 +29,8 @@ export class Configuration implements IServiceConfiguration {
     private _lastUpdated: string;
 
 
-    get host(): string {
-        return this._host;
+    get url(): string {
+        return this._url;
     }
 
     get username(): string {
@@ -62,7 +62,7 @@ export class Configuration implements IServiceConfiguration {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "type": "object",
             "properties": {
-                "host": {
+                "url": {
                     "type": "string",
                     "description": "Host"
                 },
@@ -89,7 +89,7 @@ export class Configuration implements IServiceConfiguration {
             },
             "additionalProperties": false,
             "required": [
-                "host",
+                "url",
                 "username",
                 "project"
             ]
@@ -98,7 +98,7 @@ export class Configuration implements IServiceConfiguration {
 
     store(): StoredConfiguration {
         return {
-            "host": this._host,
+            "url": this._url,
             "username": this._username,
             "password": this._password,
             "jiraHost": this._jiraHost,
@@ -107,8 +107,8 @@ export class Configuration implements IServiceConfiguration {
         };
     }
 
-    load({host, username, password, jiraHost, project, lastUpdated}: StoredConfiguration): void {
-        this._host = host;
+    load({url, username, password, jiraHost, project, lastUpdated}: StoredConfiguration): void {
+        this._url = url;
         this._username = username;
         this._password = password;
         this._jiraHost = jiraHost;
