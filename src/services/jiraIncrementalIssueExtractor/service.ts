@@ -1,4 +1,5 @@
 import * as stream from 'stream';
+import * as url from 'url';
 import JiraClient = require('jira-connector');
 import * as SyncPipes from "../../app/index";
 // config
@@ -78,11 +79,15 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.config.load(context.pipeline.extractorConfig.config);
         this.issueVersion = 1;
         this.seenUtc = moment.utc().toISOString();
+        const {protocol, host, port, pathname, href} = url.parse(this.config.url);
         this.jira = new JiraClient({
-            host: this.config.host,
+            host: host || href,
+            port,
+            protocol,
+            path_prefix: host ? pathname : null,
             basic_auth: {
                 username: this.config.username,
-                password: this.config.password
+                password: this.config.jiraHost || this.config.password
             }
         });
         // TODO add error handling
