@@ -72,23 +72,27 @@ export function where(src: Object, path: string, wherePath: string, whereValue: 
 
 export function mergeSparseArrays(targetArray: any, srcArray: any): any {
     if (lodash.isArray(targetArray)) {
-        const srcObjIndex = srcArray.findIndex(obj => obj);
-        const srcObj = srcArray[srcObjIndex];
-        const newProp = Object.keys(srcObj).pop();
-        if (!newProp) {
-            throw new Error('srcObj doesn\'t have any properties')
-        }
-        const targetIndex = targetArray.findIndex(obj => obj && !obj.hasOwnProperty(newProp));
-        if (targetIndex > -1) {
-            targetArray[targetIndex] = Object.assign({}, targetArray[targetIndex], srcObj);
+        try {
+            const srcObjIndex = srcArray.findIndex(obj => obj);
+            const srcObj = srcArray[srcObjIndex];
+            const newProp = Object.keys(srcObj).pop();
+            if (!newProp) {
+                throw new Error('srcObj doesn\'t have any properties')
+            }
+            const targetIndex = targetArray.findIndex(obj => obj && !obj.hasOwnProperty(newProp));
+            if (targetIndex > -1) {
+                targetArray[targetIndex] = Object.assign({}, targetArray[targetIndex], srcObj);
+                return targetArray;
+            }
+            const targetObj = targetArray.find((obj, index) => index === srcObjIndex && obj && obj.hasOwnProperty(newProp));
+            if (targetObj && typeof srcObj[newProp] === 'object') {
+                targetArray[srcObjIndex] = lodash.mergeWith(targetArray[srcObjIndex], srcObj, mergeSparseArrays);
+                return targetArray;
+            }
+            targetArray[srcObjIndex] = srcObj;
+            return targetArray;
+        } catch (e) {
             return targetArray;
         }
-        const targetObj = targetArray.find((obj, index) => index === srcObjIndex && obj && obj.hasOwnProperty(newProp));
-        if (targetObj && typeof srcObj[newProp] === 'object') {
-            targetArray[srcObjIndex] = lodash.mergeWith(targetArray[srcObjIndex], srcObj, mergeSparseArrays);
-            return targetArray;
-        }
-        targetArray[srcObjIndex] = srcObj;
-        return targetArray;
     }
 }
