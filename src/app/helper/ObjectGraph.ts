@@ -52,17 +52,6 @@ export class ObjectGraphNode implements IObjectGraph {
                 }
             }
         }
-        // handle property array access
-        if (prefix === '[]') {
-            const children = [];
-            for (let i = 0; i < this.children.length; ++i) {
-                const child = this.children[i];
-                if (child.getName() === `[${i}]`) {
-                    children.push(child);
-                }
-            }
-            return children;
-        }
         return this._getNodeByPrefix(prefix);
     }
 
