@@ -92,15 +92,17 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         });
         // TODO add error handling
         this.getServiceBus().on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
-            console.log('this.serviceBus.on', jiraIssueUpdatedField);
-            console.log('context.pipeline.extractorConfig.id', context.pipeline.extractorConfig._id);
-            const updatedConfig = this.config.store();
-            updatedConfig.lastUpdated = this.formatDate(jiraIssueUpdatedField);
-            SyncPipes.ServiceConfig.findByIdAndUpdate(context.pipeline.extractorConfig._id.toString(), {config: updatedConfig}, (err: any, res: any) => {
-                if (err) {
-                    this.logger.error(err);
-                }
-            })
+            if (jiraIssueUpdatedField) {
+                console.log('this.serviceBus.on', jiraIssueUpdatedField);
+                console.log('context.pipeline.extractorConfig.id', context.pipeline.extractorConfig._id);
+                const updatedConfig = this.config.store();
+                updatedConfig.lastUpdated = this.formatDate(jiraIssueUpdatedField);
+                SyncPipes.ServiceConfig.findByIdAndUpdate(context.pipeline.extractorConfig._id.toString(), {config: updatedConfig}, (err: any, res: any) => {
+                    if (err) {
+                        this.logger.error(err);
+                    }
+                });
+            }
         });
         return Promise.resolve();
     }
@@ -168,8 +170,9 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                 throw new Error('No output stream available');
             }
 
+            const jql = `project="${this.config.project}" AND updated >= '${lastUpdated}' ORDER BY updated ASC`;
             this.jira.search.search({
-                jql: `project="${this.config.project}" AND updated >= '${lastUpdated}' ORDER BY updated ASC`,
+                jql,
                 startAt,
                 maxResults
             }, (err, fetchedIssues) => {
@@ -185,6 +188,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
 
                 this.stream.push({issues, message});
                 this.logger.debug(`Total number of issues: ${fetchedIssues.total}`);
+                this.logger.debug(`Last JQL: ${jql}`);
                 this.logger.debug(`Last number of fetched issues: ${issues.length}`);
                 this.logger.debug(`start loading issues for next batch at: ${newStartAt}`);
 
