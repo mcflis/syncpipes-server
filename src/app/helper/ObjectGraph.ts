@@ -127,9 +127,15 @@ export class ObjectGraphNode implements IObjectGraph {
                 if (obj.hasOwnProperty(key)) {
                     if (lodash.isArray(obj[key])) {
                         if (!this.isScalarArrayDeep(obj[key])) {
-                            let node = new ObjectGraphNode(key, this);
-                            node.insert(obj[key]);
-                            this.children.push(node);
+                            let i = 0;
+                            for (let item of obj[key]) {
+                                const nodeName = key === 'issues' ? key : `${key}[${i}]`;
+                                let node = new ObjectGraphNode(nodeName, this);
+                                // handle child elements
+                                node.insert(item);
+                                this.children.push(node);
+                                i++;
+                            }
                         } else {
                             let node = new ObjectGraphLeaf(key, obj[key], this);
                             this.children.push(node);
