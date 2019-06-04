@@ -74,13 +74,7 @@ export class MappingTree {
 
     insert(path: string, value: Array<IPropertyMapping>, updateValue: boolean = false) {
         // update self
-        let idx = path.search(/\/|\[]/);
-        if (path.startsWith(']')) {
-            path = `[${path}`;
-            if (path.length > 2) {
-                idx++;
-            }
-        }
+        let idx = path.indexOf('/');
         if (idx === -1) {
             if (path === this.name || updateValue) {
                 this.updateValue(value);
