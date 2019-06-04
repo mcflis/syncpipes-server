@@ -57,7 +57,7 @@ export class ObjectGraphNode implements IObjectGraph {
 
     private _getNodeByPrefix(prefix: string): Array<ObjectGraphNode> {
         // prefix is current node
-        if (prefix === this.name) {
+        if (ObjectGraphNode.sanitizePath(prefix) === ObjectGraphNode.sanitizePath(this.name)) {
             return [this];
         }
         // check if we need to check
@@ -71,12 +71,18 @@ export class ObjectGraphNode implements IObjectGraph {
                 // handle array nodes
                 if (child.getName().match(/^\[[0-9+]\]$/)) {
                     nodes = nodes.concat((<ObjectGraphNode>child).getNodeByPrefix(prefix));
-                } else if (current === child.getName()) {
+                } else if (ObjectGraphNode.sanitizePath(current) === ObjectGraphNode.sanitizePath(child.getName())) {
                     nodes = nodes.concat((<ObjectGraphNode>child).getNodeByPrefix(prefix.substr(idx+1)));
                 }
             }
         }
         return nodes;
+    }
+
+    private static sanitizePath(path: string): string {
+        if (path) {
+            return path.replace(/\[[0-9]*]$/, '');
+        }
     }
 
     getLeafByName(name: string): ObjectGraphLeaf {
