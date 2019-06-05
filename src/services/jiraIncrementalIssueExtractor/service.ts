@@ -6,6 +6,7 @@ import * as SyncPipes from "../../app/index";
 import { Configuration } from './Configuration';
 import * as moment from "moment";
 import "moment-timezone";
+import delay from '../../app/helper/delay';
 
 /**
  * Extracts Issues from a jira org
@@ -197,7 +198,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                     this.stream.push(null);
                     return;
                 }
-                process.nextTick(this.fetchIssues.bind(this, lastUpdated, newStartAt, maxResults));
+                process.nextTick(() => delay(this.config.backoffInMs).then(() => this.fetchIssues(lastUpdated, newStartAt, maxResults)));
                 resolve();
             });
         });
