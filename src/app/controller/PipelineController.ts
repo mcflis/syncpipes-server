@@ -67,10 +67,10 @@ export class PipelineController extends AbstractController {
         let b = request.body;
         // find mapping
         Pipeline.findById(request.params.id).exec().then((pipeline: IPipeline) => {
-            pipeline.name = b.name;
-            pipeline.mapping = b.mapping;
-            pipeline.extractorConfig = b.extractorConfig;
-            pipeline.loaderConfig = b.loaderConfig;
+            const updatable = ['name', 'loaderConfig', 'extractorConfig', 'mapping', 'state'];
+            Object.keys(b).filter(k => updatable.includes(k)).forEach(k => {
+                pipeline[k] = b[k];
+            });
             pipeline.save((err, obj) => {
                 if (err) {
                     response.status(500).json(err);

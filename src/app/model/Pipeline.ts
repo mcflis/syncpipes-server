@@ -2,11 +2,16 @@ import * as mongoose from 'mongoose';
 import { IServiceConfig } from "./ServiceConfig";
 import { IMapping } from "./Mapping";
 
+export interface IPipelineState {
+    [key: string]: any;
+}
+
 export interface IPipeline extends mongoose.Document {
     name: string,
     extractorConfig: IServiceConfig
     loaderConfig: IServiceConfig
-    mapping: IMapping
+    mapping: IMapping,
+    state: IPipelineState,
     created: Date;
     updated: Date;
 }
@@ -32,6 +37,7 @@ var PipelineSchema = new mongoose.Schema({
         required: true
     },
     lastExecuted: Date,
+    state: mongoose.Schema.Types.Mixed,
     created: {
         type: Date,
         "default": Date.now
