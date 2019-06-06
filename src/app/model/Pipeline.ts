@@ -37,7 +37,10 @@ var PipelineSchema = new mongoose.Schema({
         required: true
     },
     lastExecuted: Date,
-    state: mongoose.Schema.Types.Mixed,
+    state: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    },
     created: {
         type: Date,
         "default": Date.now
@@ -46,6 +49,8 @@ var PipelineSchema = new mongoose.Schema({
         type: Date,
         "default": Date.now
     }
+}, {
+    minimize: false
 }).pre('save', function (next) {
     this.updated = new Date();
     next();
