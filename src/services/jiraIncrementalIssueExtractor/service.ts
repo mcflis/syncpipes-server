@@ -128,8 +128,13 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         };
 
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-        const lastUpdated = this.config.lastUpdated || this.formatDate(new Date(0).toISOString());
-        this.fetchTimeZone().then(() => this.fetchIssues(lastUpdated));
+        const pipelineState: PipelineState = this.context.pipeline.state as PipelineState;
+        this.fetchTimeZone()
+            .then(() => pipelineState.mostRecentJiraTicketUpdated || this.formatDate(new Date(0).toISOString()))
+            .then(lastUpdated => {
+                this.logger.debug(`About to fetch issues last updated at ${lastUpdated}`);
+                return this.fetchIssues(lastUpdated)
+            });
 
         return this.stream;
     }
@@ -185,11 +190,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             }
 
             const jql = `project="${this.config.project}" AND updated >= '${lastUpdated}' ORDER BY updated ASC`;
-            this.jira.search.search({
-                jql,
-                startAt,
-                maxResults
-            }, (err, fetchedIssues) => {
+            this.jira.search.search({jql, startAt, maxResults}, (err, fetchedIssues) => {
                 if (err) {
                     reject(err);
                     this.stream.push(null);
