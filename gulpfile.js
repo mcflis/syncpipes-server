@@ -24,6 +24,8 @@ var config = {
     "node_modules/reflect-metadata/reflect-metadata.d.ts",
     "node_modules/inversify-dts/inversify/inversify.d.ts",
     "typings/index.d.ts",
+    "typings_custom/index.d.ts",
+    "extensions.d.ts",
     "src/**/*.ts"
   ],
   "watchFiles": [

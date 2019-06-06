@@ -74,7 +74,9 @@ export class ServiceController extends AbstractController {
                 }, () => {
                     response.status(500).json({"error": "Cannot find config files!"});
                 });
-            }, (err) => response.status(500).json(err));
+            }, (err) => {
+                response.status(500).json(err);
+            });
         }
     }
 
@@ -138,7 +140,9 @@ export class ServiceController extends AbstractController {
         } else {
             ServiceConfig.find({"service": service.getName()}).exec().then((documents) => {
                 response.json(documents);
-            }, (err) => response.status(500).json(err));
+            }, (err) => {
+                response.status(500).json(err)
+            });
         }
     }
 

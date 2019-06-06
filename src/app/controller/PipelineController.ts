@@ -132,14 +132,16 @@ export class PipelineController extends AbstractController {
                             pipelineExecution.status = "Queued";
                             pipelineExecution.pipeline = pipeline._id;
                             pipelineExecution.save((err, obj: IPipelineExecution) => {
-                                context.executionID = obj._id;
+                                context.executionID = obj._id.toString();
                                 scheduler.schedule(context);
                                 response.json(obj);
                             });
                         }
                     }
 
-                }, (err) => response.status(500).json(err));
+                }, (err) => {
+                    response.status(500).json(err)
+                });
             }
         });
     }

@@ -1,5 +1,5 @@
 //noinspection TypeScriptCheckImport
-import { IKernel as Container } from "inversify";
+import * as inversify from "inversify";
 import {Response} from 'express';
 
 /**
@@ -29,9 +29,9 @@ export function Route(route: string, method: string) {
 
 export abstract class AbstractController {
 
-    protected container: Container;
+    protected container: inversify.interfaces.Kernel;
 
-    public setContainer(container: Container) {
+    public setContainer(container: inversify.interfaces.Kernel) {
         this.container = container;
     }
 

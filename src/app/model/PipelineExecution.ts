@@ -1,9 +1,8 @@
 import * as mongoose from 'mongoose';
-import { IPipeline } from "./Pipeline";
 import { ILoggerMessage } from "../service/Logger";
 
 export interface IPipelineExecution extends mongoose.Document {
-    pipeline: IPipeline
+    pipeline: mongoose.Types.ObjectId
     status: string
     log: Array<ILoggerMessage>
     started: Date;
