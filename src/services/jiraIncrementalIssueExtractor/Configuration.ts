@@ -1,4 +1,4 @@
-import { IServiceConfiguration, ISchema, Schema } from "../../app/index";
+import { IServiceConfiguration, ISchema, Schema } from "../../app";
 /**
  * MySQL Configuration for this extension
  */
@@ -8,7 +8,6 @@ interface StoredConfiguration {
     password: string;
     jiraHost: string;
     project: string;
-    lastUpdated: string;
     backoffInMs: number;
 }
 
@@ -26,8 +25,6 @@ export class Configuration implements IServiceConfiguration {
     private _jiraHost: string;
 
     private _project: string;
-
-    private _lastUpdated: string;
 
     private _backoffInMs: number;
 
@@ -61,10 +58,6 @@ export class Configuration implements IServiceConfiguration {
         return this._project;
     }
 
-    get lastUpdated(): string {
-        return this._lastUpdated;
-    }
-
     get backoffInMs(): number {
         return this._backoffInMs;
     }
@@ -94,10 +87,6 @@ export class Configuration implements IServiceConfiguration {
                     "type": "string",
                     "description": "Jira project",
                 },
-                "lastUpdated": {
-                    "type": "string",
-                    "description": "Timestamp supported by the 'updated' field in Jira"
-                },
                 "backoffInMs": {
                     "type": "integer",
                     "description": "Time in milliseconds between requests to Jira",
@@ -120,18 +109,16 @@ export class Configuration implements IServiceConfiguration {
             "password": this._password,
             "jiraHost": this._jiraHost,
             "project": this._project,
-            "lastUpdated": this._lastUpdated,
             "backoffInMs": this._backoffInMs
         };
     }
 
-    load({url, username, password, jiraHost, project, lastUpdated, backoffInMs}: StoredConfiguration): void {
+    load({url, username, password, jiraHost, project, backoffInMs}: StoredConfiguration): void {
         this._url = url;
         this._username = username;
         this._password = password;
         this._jiraHost = jiraHost;
         this._project = project;
-        this._lastUpdated = lastUpdated;
         this._backoffInMs = backoffInMs;
     }
 }
