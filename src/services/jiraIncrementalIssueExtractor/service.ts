@@ -101,7 +101,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                 const newState: PipelineState = {
                     mostRecentJiraTicketUpdated: this.formatDate(jiraIssueUpdatedField)
                 };
-                this.logger.debug(`Storing timestamp of most recently updated Jira ticket: ${newState.mostRecentJiraTicketUpdated}`);
+                this.logger.info(`Storing timestamp of most recently updated Jira ticket: ${newState.mostRecentJiraTicketUpdated}`);
                 Object.assign(this.context.pipeline.state, newState);
                 SyncPipes.Pipeline.findById(this.context.pipeline._id.toString()).exec()
                     .then((pipeline: SyncPipes.IPipeline) => {
@@ -111,7 +111,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                                 this.logger.error(err);
                                 return;
                             }
-                            this.logger.debug(`Storing timestamp of most recently updated Jira ticket was successful`);
+                            this.logger.info(`Storing timestamp of most recently updated Jira ticket was successful`);
                         });
                     }, (err) => {
                         this.logger.error(err);
@@ -132,9 +132,12 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.fetchTimeZone()
             .then(() => pipelineState.mostRecentJiraTicketUpdated || this.formatDate(new Date(0).toISOString()))
             .then(lastUpdated => {
-                this.logger.debug(`About to fetch issues last updated at ${lastUpdated}`);
-                return this.fetchIssues(lastUpdated)
-            });
+                const jql = `project="${this.config.project}" AND updated >= '${lastUpdated}' ORDER BY updated ASC`;
+                this.logger.info(`About to fetch issues last updated at ${lastUpdated}`);
+                this.logger.info(`Fetch using JQL: ${jql}`);
+                return this.fetchIssues(jql, lastUpdated)
+            })
+            .catch(err => this.logger.error(err));
 
         return this.stream;
     }
@@ -183,17 +186,16 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             })
     }
 
-    private fetchIssues(lastUpdated: string, startAt: number = 0, maxResults: number = 50): Promise<void> {
+    private fetchIssues(jql: string, lastUpdated: string, startAt: number = 0, maxResults: number = 50): Promise<void> {
         return new Promise<any>((resolve, reject) => {
             if (this.stream === null) {
                 throw new Error('No output stream available');
             }
 
-            const jql = `project="${this.config.project}" AND updated >= '${lastUpdated}' ORDER BY updated ASC`;
             this.jira.search.search({jql, startAt, maxResults}, (err, fetchedIssues) => {
                 if (err) {
-                    reject(err);
                     this.stream.push(null);
+                    reject(err);
                     return;
                 }
 
@@ -202,17 +204,17 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                 const message = JiraIncrementalIssueExtractor.createServiceBusMessage(issues);
 
                 this.stream.push({issues, message});
-                this.logger.debug(`Total number of issues: ${fetchedIssues.total}`);
-                this.logger.debug(`Last JQL: ${jql}`);
-                this.logger.debug(`Last number of fetched issues: ${issues.length}`);
-                this.logger.debug(`start loading issues for next batch at: ${newStartAt}`);
+                this.logger.info(`Fetched issues: current/aggregated/total: ${issues.length}/${Math.min(newStartAt, fetchedIssues.total)}/${fetchedIssues.total}`);
 
                 if (newStartAt >= fetchedIssues.total) {
                     resolve();
                     this.stream.push(null);
                     return;
                 }
-                process.nextTick(() => delay(this.config.backoffInMs).then(() => this.fetchIssues(lastUpdated, newStartAt, maxResults)));
+                process.nextTick(() => delay(this.config.backoffInMs)
+                    .then(() => this.fetchIssues(jql, lastUpdated, newStartAt, maxResults))
+                    .catch(err => this.logger.error(err))
+                );
                 resolve();
             });
         });
