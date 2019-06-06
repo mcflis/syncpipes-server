@@ -8,6 +8,10 @@ import * as moment from "moment";
 import "moment-timezone";
 import delay from '../../app/helper/delay';
 
+interface PipelineState extends SyncPipes.IPipelineState {
+    mostRecentJiraTicketUpdated: string;
+}
+
 /**
  * Extracts Issues from a jira org
  */
@@ -94,15 +98,24 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         // TODO add error handling
         this.getServiceBus().on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
             if (jiraIssueUpdatedField) {
-                console.log('this.serviceBus.on', jiraIssueUpdatedField);
-                console.log('context.pipeline.extractorConfig.id', context.pipeline.extractorConfig._id);
-                const updatedConfig = this.config.store();
-                updatedConfig.lastUpdated = this.formatDate(jiraIssueUpdatedField);
-                SyncPipes.ServiceConfig.findByIdAndUpdate(context.pipeline.extractorConfig._id.toString(), {config: updatedConfig}, (err: any, res: any) => {
-                    if (err) {
+                const newState: PipelineState = {
+                    mostRecentJiraTicketUpdated: this.formatDate(jiraIssueUpdatedField)
+                };
+                this.logger.debug(`Storing timestamp of most recently updated Jira ticket: ${newState.mostRecentJiraTicketUpdated}`);
+                Object.assign(this.context.pipeline.state, newState);
+                SyncPipes.Pipeline.findById(this.context.pipeline._id.toString()).exec()
+                    .then((pipeline: SyncPipes.IPipeline) => {
+                        pipeline.state = Object.assign({}, pipeline.state, this.context.pipeline.state);
+                        pipeline.save(err => {
+                            if (err) {
+                                this.logger.error(err);
+                                return;
+                            }
+                            this.logger.debug(`Storing timestamp of most recently updated Jira ticket was successful`);
+                        });
+                    }, (err) => {
                         this.logger.error(err);
-                    }
-                });
+                    });
             }
         });
         return Promise.resolve();
