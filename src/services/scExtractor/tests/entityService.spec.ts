@@ -25,7 +25,7 @@ describe('SocioCortexEntitiesExtractor Test', () => {
                         "workspace": "Sebis Kontakte"
                     }
                 },
-                mapping: <IMapping> {
+                mapping: {
                     "_id" : { "$oid" : "5777e9c83e9e3f3c411b4724"},
                     "name" : "SC Contacts To Otulook Contacts" ,
                     "extractorService" : "SocioCortexExtractor" ,
@@ -73,7 +73,7 @@ describe('SocioCortexEntitiesExtractor Test', () => {
                     "__v" : 5 ,
                     "extractorServiceConfig" : "Extractor for socioCortex Contact list" ,
                     "loaderServiceConfig" : "Outlook Contacts Configuration"
-                }
+                } as any as IMapping
             };
 
             let logger = new ConsoleLogger();

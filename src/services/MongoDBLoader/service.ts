@@ -1,7 +1,8 @@
 import * as stream from 'stream';
 import * as SyncPipes from "../../app/index";
 import {Configuration} from './Configuration';
-import MongoClient = require('mongodb').MongoClient;
+import mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 
 export class MongoDBLoaderService implements SyncPipes.ILoaderService {
 
@@ -111,9 +112,9 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
     }
 
     // Open the MongoDB connection.
-    openDbConnection(mongoUrl: String): Promise<any> {
+    openDbConnection(mongoUrl: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            MongoClient.connect(mongoUrl, (err, db) => {
+            MongoClient.connect(mongoUrl, (err, db: mongodb.Db) => {
                 if(!err) {
                     this.dbConnection = db;
                     resolve();
