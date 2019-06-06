@@ -77,7 +77,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
     }
 
 // "es6-promise": "registry:dt/es6-promise#0.0.0+20160726191732",
-    prepare(context: SyncPipes.PipelineContext, logger: SyncPipes.ILogger): Promise<any> {
+    async prepare(context: SyncPipes.PipelineContext, logger: SyncPipes.ILogger): Promise<any> {
         this.context = context;
         this.config = new Configuration();
         this.logger = logger;
@@ -85,6 +85,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.issueVersion = 1;
         this.seenUtc = moment.utc().toISOString();
         const {protocol, host, port, pathname, href} = url.parse(this.config.url);
+        this.logger.debug(`Parsed url: protocol: ${protocol}, host: ${host}, port: ${port} pathname: ${pathname}, href: ${href}`);
         this.jira = new JiraClient({
             host: host || href,
             port,
@@ -95,30 +96,9 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                 password: this.config.jiraHost || this.config.password
             }
         });
-        // TODO add error handling
         this.getServiceBus().on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
-            if (jiraIssueUpdatedField) {
-                const newState: PipelineState = {
-                    mostRecentJiraTicketUpdated: this.formatDate(jiraIssueUpdatedField)
-                };
-                this.logger.info(`Storing timestamp of most recently updated Jira ticket: ${newState.mostRecentJiraTicketUpdated}`);
-                Object.assign(this.context.pipeline.state, newState);
-                SyncPipes.Pipeline.findById(this.context.pipeline._id.toString()).exec()
-                    .then((pipeline: SyncPipes.IPipeline) => {
-                        pipeline.state = Object.assign({}, pipeline.state, this.context.pipeline.state);
-                        pipeline.save(err => {
-                            if (err) {
-                                this.logger.error(err);
-                                return;
-                            }
-                            this.logger.info(`Storing timestamp of most recently updated Jira ticket was successful`);
-                        });
-                    }, (err) => {
-                        this.logger.error(err);
-                    });
-            }
+            this.onPipelineStateUpdateRequested(jiraIssueUpdatedField);
         });
-        return Promise.resolve();
     }
 
     extract(): stream.Readable {
@@ -137,7 +117,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                 this.logger.info(`Fetch using JQL: ${jql}`);
                 return this.fetchIssues(jql, lastUpdated)
             })
-            .catch(err => this.logger.error(err));
+            .catch(this.getErrorHandler());
 
         return this.stream;
     }
@@ -211,13 +191,10 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
                     this.stream.push(null);
                     return;
                 }
-                process.nextTick(() => delay(this.config.backoffInMs)
-                    .then(() => this.fetchIssues(jql, lastUpdated, newStartAt, maxResults))
-                    .catch(err => this.logger.error(err))
-                );
+                process.nextTick(() => delay(this.config.backoffInMs).then(() => this.fetchIssues(jql, lastUpdated, newStartAt, maxResults)));
                 resolve();
             });
-        });
+        }).catch(this.getErrorHandler());
     }
 
     updateConfigSchema(inputData: Array<Buffer>) {
@@ -251,5 +228,26 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             issue.seen = this.seenUtc;
             return issue;
         })
+    }
+
+    private onPipelineStateUpdateRequested(jiraIssueUpdatedField: string): void {
+        if (jiraIssueUpdatedField) {
+            const newState: PipelineState = {
+                mostRecentJiraTicketUpdated: this.formatDate(jiraIssueUpdatedField)
+            };
+            this.logger.info(`Storing timestamp of most recently updated Jira ticket: ${newState.mostRecentJiraTicketUpdated}`);
+            Object.assign(this.context.pipeline.state, newState);
+            SyncPipes.Pipeline.findById(this.context.pipeline._id.toString()).exec()
+                .then((pipeline: SyncPipes.IPipeline) => {
+                    pipeline.state = Object.assign({}, pipeline.state, this.context.pipeline.state);
+                    pipeline.save(err => {
+                        if (err) {
+                            this.getErrorHandler()(err);
+                            return;
+                        }
+                        this.logger.info(`Storing timestamp of most recently updated Jira ticket was successful`);
+                    });
+                }, this.getErrorHandler());
+        }
     }
 }

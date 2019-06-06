@@ -11,6 +11,8 @@ export interface IServiceConfiguration {
     load(config: Object): void;
 }
 
+export type ServiceErrorHandler = (err) => void;
+
 export interface IService extends IConfigSchema {
     getName(): string;
     getConfiguration(): IServiceConfiguration;
@@ -18,6 +20,9 @@ export interface IService extends IConfigSchema {
     getSchema(): ISchema;
     prepare(context: IPipelineContext, logger: ILogger): Promise<any>;
     setServiceBus(eventEmitter: EventEmitter): void;
+    getServiceBus(): EventEmitter;
+    setErrorHandler(handler: ServiceErrorHandler): void;
+    getErrorHandler(): ServiceErrorHandler;
 }
 
 export interface IConfigSchema {
@@ -54,6 +59,7 @@ export interface ServiceBusMessage {
 
 export abstract class BaseService implements IService {
     private _serviceBus: EventEmitter;
+    private _serviceErrorHandler: ServiceErrorHandler;
     abstract getConfigSchema(config): Promise<ISchema>;
     abstract getConfiguration(): IServiceConfiguration;
     abstract getName(): string;
@@ -69,6 +75,13 @@ export abstract class BaseService implements IService {
         this._serviceBus = eventEmitter;
     }
 
+    setErrorHandler(handler: ServiceErrorHandler): void {
+        this._serviceErrorHandler = handler;
+    }
+
+    getErrorHandler(): ServiceErrorHandler {
+        return this._serviceErrorHandler;
+    }
 }
 
 export interface IExtractorService extends IService {
