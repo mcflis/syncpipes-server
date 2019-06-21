@@ -20,8 +20,11 @@ console.log(`${Bright}${FgYellow}${command} ${params.join(' ')}${Reset}`);
 const docker = spawn(command, params, {stdio: 'inherit'});
 docker.on('exit', code => {
     console.info(`
-${Bright}${FgCyan}${command} finished with code ${code}${Reset}
-
+${Bright}${FgCyan}${command} finished with code ${code}${Reset}`);
+    if (code !== 0) {
+        process.exit(code);
+    }
+    console.info(`
 ${Bright}${FgYellow}Push the created image to your docker hub:${Reset}
 ${Bright}>>>${Reset} ${Bright}${FgGreen}sudo ${command} ${Reset}push ${tag}`);
 });
