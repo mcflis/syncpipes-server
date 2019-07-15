@@ -7,7 +7,8 @@
   "license": "ISC",
   "scripts": {
     "nodemon:debug:server": "nodemon --config nodemon-debug-server.json",
-    "nodemon:debug:worker": "nodemon --config nodemon-debug-worker.json"
+    "nodemon:debug:worker": "nodemon --config nodemon-debug-worker.json",
+    "build:docker:image": "node node_modules/@mcflis/node-docker-build-helper/docker_build.js"
   },
   "dependencies": {
     "ajv": "4.11.8",
@@ -38,6 +39,7 @@
     "xlsx": "0.8.8"
   },
   "devDependencies": {
+    "@mcflis/node-docker-build-helper": "gist:e9ffc44cf3402ac684196865f87e5881",
     "@types/moment-timezone": "0.5.12",
     "babel-preset-es2015": "6.24.1",
     "chai": "3.5.0",
