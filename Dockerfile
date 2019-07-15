@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:8.15.1
 
 MAINTAINER Fridolin Koch <frido.koch@tum.de>
 
