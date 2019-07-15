@@ -85,7 +85,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
         this.issueVersion = 1;
         this.seenUtc = moment.utc().toISOString();
         const {protocol, hostname, port, pathname, href} = url.parse(this.config.url);
-        this.logger.debug(`Parsed url: protocol: ${protocol}, host: ${host}, port: ${port} pathname: ${pathname}, href: ${href}`);
+        this.logger.debug(`Parsed url: protocol: ${protocol}, hostname: ${hostname}, port: ${port} pathname: ${pathname}, href: ${href}`);
         this.jira = new JiraClient({
             host: hostname || href,
             port,
