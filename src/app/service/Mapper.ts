@@ -35,7 +35,7 @@ export class TrivialMapper extends stream.Transform implements IMapper {
             return null;
         }
         try {
-            let dest = this.transformer.transform(chunk);
+            const dest = this.transformer.transform(chunk);
             this.push(dest);
             callback();
         } catch (e) {

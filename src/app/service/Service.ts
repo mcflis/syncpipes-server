@@ -2,6 +2,8 @@ import * as stream from 'stream';
 import { ISchema } from './Schema';
 import { IPipeline } from "../model/Pipeline";
 import { ILogger } from "./Logger";
+import { EventEmitter } from 'events';
+import mongodb = require('mongodb');
 
 export interface IServiceConfiguration {
     getSchema(): ISchema;
@@ -9,12 +11,18 @@ export interface IServiceConfiguration {
     load(config: Object): void;
 }
 
+export type ServiceErrorHandler = (err) => void;
+
 export interface IService extends IConfigSchema {
     getName(): string;
     getConfiguration(): IServiceConfiguration;
     setConfiguration(config: IServiceConfiguration): void;
     getSchema(): ISchema;
     prepare(context: IPipelineContext, logger: ILogger): Promise<any>;
+    setServiceBus(eventEmitter: EventEmitter): void;
+    getServiceBus(): EventEmitter;
+    setErrorHandler(handler: ServiceErrorHandler): void;
+    getErrorHandler(): ServiceErrorHandler;
 }
 
 export interface IConfigSchema {
@@ -23,6 +31,58 @@ export interface IConfigSchema {
 
 // Fetch vs. Pull vs. Active
 export enum ExtractorServiceType {Active, Passive}
+
+export enum ServiceBusEvent {
+    MostRecentlyUpdated
+}
+
+export function getServiceBusEventName(e: ServiceBusEvent): string {
+    return ServiceBusEvent[e];
+}
+
+type MongoDBFilterFunction = (db: mongodb.Db, newDocuments: any[]) => Promise<any[]>;
+export type FilterFunction = MongoDBFilterFunction;
+
+export interface ServiceBusMessageNotification {
+    name: string;
+    data: any;
+}
+
+export interface DocumentFilter {
+    [key: string]: FilterFunction;
+}
+
+export interface ServiceBusMessage {
+    notify?: ServiceBusMessageNotification
+    filter?: DocumentFilter
+}
+
+export abstract class BaseService implements IService {
+    private _serviceBus: EventEmitter;
+    private _serviceErrorHandler: ServiceErrorHandler;
+    abstract getConfigSchema(config): Promise<ISchema>;
+    abstract getConfiguration(): IServiceConfiguration;
+    abstract getName(): string;
+    abstract getSchema(): ISchema;
+    abstract prepare(context: IPipelineContext, logger: ILogger): Promise<any>;
+    abstract setConfiguration(config: IServiceConfiguration): void;
+
+    getServiceBus(): EventEmitter {
+        return this._serviceBus;
+    }
+
+    setServiceBus(eventEmitter: EventEmitter): void {
+        this._serviceBus = eventEmitter;
+    }
+
+    setErrorHandler(handler: ServiceErrorHandler): void {
+        this._serviceErrorHandler = handler;
+    }
+
+    getErrorHandler(): ServiceErrorHandler {
+        return this._serviceErrorHandler;
+    }
+}
 
 export interface IExtractorService extends IService {
     extract(): stream.Readable;

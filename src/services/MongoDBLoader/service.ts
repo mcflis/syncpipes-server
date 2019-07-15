@@ -4,14 +4,14 @@ import {Configuration} from './Configuration';
 import mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 
-export class MongoDBLoaderService implements SyncPipes.ILoaderService {
+export class MongoDBLoaderService extends SyncPipes.BaseService implements SyncPipes.ILoaderService {
 
     /**
      * Extension config
      */
     private config: Configuration;
 
-    private dbConnection: any = null;
+    private dbConnection: mongodb.Db = null;
 
     /**
      * Workflow context
@@ -34,6 +34,7 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 
@@ -96,17 +97,29 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
     load(): stream.Writable {
         this.stream = new stream.Writable({objectMode: true});
         this.stream._write = (chunk, encoding, callback) => {
+            const serviceBusMessage: SyncPipes.ServiceBusMessage = chunk.message;
             this.logger.debug("Data loading started", null);
             // Get the keys in the chunks; do tis in a generic way, without referring to keys explicitly
             this.insertDocuments(chunk.projectCategories, "projectCategories")
                 .then(() => this.insertDocuments(chunk.projects, "projects"))
-                .then(() => this.insertDocuments(chunk.issues, "issues"))
+                .then(() => this.filterDocuments(chunk.issues, "issues", serviceBusMessage).then(docs => this.insertDocuments(docs, "issues")))
                 .then(() => this.insertDocuments(chunk.decisionCategories, "decisionCategories"))
                 .then(() => this.insertDocuments(chunk.qualityAttributes, "qualityAttributes"))
-                .then(() => { this.closeDbConnection(); })
+                .then(() => {
+                    if (serviceBusMessage && serviceBusMessage.notify) {
+                        this.getServiceBus().emit(serviceBusMessage.notify.name, serviceBusMessage.notify.data)
+                    }
+                })
                 .then(() => callback())
                 .catch((err) => callback(err));
         };
+
+        const closeDb = () => {
+            this.closeDbConnection();
+        };
+
+        this.stream.on('finish', closeDb);
+        this.stream.on('error', closeDb);
 
         return this.stream;
     }
@@ -150,6 +163,16 @@ export class MongoDBLoaderService implements SyncPipes.ILoaderService {
                 reject();
             }
         });
+    }
+
+    filterDocuments(documents: any[], collectionName: string, message?: SyncPipes.ServiceBusMessage): Promise<any[]> {
+        if (documents.length < 1 || !message || !message.filter) {
+            return Promise.resolve(documents);
+        }
+        if (!this.dbConnection) {
+            return Promise.reject('Db connection is not available');
+        }
+        return message.filter[collectionName](this.dbConnection, documents);
     }
 
     // Get the count of all documents in the collection.

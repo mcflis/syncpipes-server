@@ -1,10 +1,11 @@
 import { injectable, inject } from "inversify";
 import * as amqp from 'amqplib';
-import { PipelineContext, IExtractorService, ILoaderService } from "../service/Service";
+import { PipelineContext, IExtractorService, ILoaderService, ServiceErrorHandler } from "../service/Service";
 import { IServiceManager } from "./ServiceManager";
 import { PipelineExecution } from "../model/PipelineExecution";
 import { TrivialMapper } from "../service/Mapper";
 import { MongoLogger } from "../service/Logger";
+import { EventEmitter } from "events";
 
 export interface IJobSchedulerConfig {
     host: string;
@@ -72,14 +73,15 @@ export class JobScheduler implements IJobScheduler {
         }).then(() => {
             this.channel.consume(this.queueName, (msg) => {
                 // deserialize pipeline context
+                const serviceBus = new EventEmitter();
                 let context = PipelineContext.createFromJson(msg.content.toString());
                 // logger
                 let logger = new MongoLogger(context.executionID);
                 // set pipeline status
                 PipelineExecution.update({_id: context.executionID}, {"$set": {"status": "Running"}}).exec();
                 // helper for error handling
-                let handleError = (error) => {
-                    logger.error(error);
+                let handleError: ServiceErrorHandler = (error) => {
+                    logger.error(error, context);
                     let query = {
                         "$set": {
                             "status": "Failed",
@@ -93,7 +95,11 @@ export class JobScheduler implements IJobScheduler {
                     logger.info(`Pipeline ${context.pipeline.name} started`);
                     // get extractor and loader
                     let extractor = <IExtractorService>this.services.get(context.pipeline.extractorConfig.service);
+                    extractor.setServiceBus(serviceBus);
+                    extractor.setErrorHandler(handleError);
                     let loader = <ILoaderService>this.services.get(context.pipeline.loaderConfig.service);
+                    loader.setServiceBus(serviceBus);
+                    loader.setErrorHandler(handleError);
                     // set extractor config
                     let extractorConfig = extractor.getConfiguration();
                     if (extractorConfig != null) {

@@ -69,3 +69,27 @@ export function where(src: Object, path: string, wherePath: string, whereValue: 
     }
     return result;
 }
+
+export function mergeSparseArrays(targetArray: any, srcArray: any): any {
+    if (lodash.isArray(targetArray)) {
+        const srcObjIndex = srcArray.findIndex(obj => obj);
+        const srcObj = srcArray[srcObjIndex];
+        const newProp = Object.keys(srcObj).pop();
+        if (!newProp) {
+            console.error(new Error('srcObj doesn\'t have any properties'));
+            return targetArray;
+        }
+
+        const targetObj = targetArray.find((obj, index) => index === srcObjIndex && obj);
+        if (targetObj && !targetObj.hasOwnProperty(newProp)) {
+            targetArray[srcObjIndex] = Object.assign({}, targetArray[srcObjIndex], srcObj);
+            return targetArray;
+        }
+        if (targetObj && typeof srcObj[newProp] === 'object') {
+            targetArray[srcObjIndex] = lodash.mergeWith(targetArray[srcObjIndex], srcObj, mergeSparseArrays);
+            return targetArray;
+        }
+        targetArray[srcObjIndex] = srcObj;
+        return targetArray;
+    }
+}

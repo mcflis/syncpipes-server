@@ -1,4 +1,5 @@
 export * from "./Kernel";
+export * from "./filters/Filters";
 export * from "./service/Service";
 export * from "./service/Schema";
 export * from "./service/Logger";

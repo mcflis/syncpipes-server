@@ -10,7 +10,7 @@ import { Configuration } from './Configuration'
 /**
  * Load GitHub issues into mysql
  */
-export class PureIssueLoaderService implements SyncPipes.ILoaderService {
+export class PureIssueLoaderService extends SyncPipes.BaseService implements SyncPipes.ILoaderService {
 
     /**
      * Extension config
@@ -43,6 +43,7 @@ export class PureIssueLoaderService implements SyncPipes.ILoaderService {
     private schema: SyncPipes.ISchema;
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

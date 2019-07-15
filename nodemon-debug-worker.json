@@ -1,0 +1,3 @@
+{
+  "exec": "node --inspect=127.0.0.1:9228 dist/worker.js"
+}

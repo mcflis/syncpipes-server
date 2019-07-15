@@ -5,7 +5,7 @@ import {Configuration} from './Configuration'
 import 'node-rest-client';
 import 'events';
 
-export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
+export class SocioCortexLoaderService extends SyncPipes.BaseService implements SyncPipes.ILoaderService {
 
     /**
      * Extension config
@@ -79,6 +79,7 @@ export class SocioCortexLoaderService implements SyncPipes.ILoaderService {
     };
 
     constructor() {
+        super();
         this.schema = SyncPipes.Schema.createFromFile(__dirname + '/schema.json');
     }
 

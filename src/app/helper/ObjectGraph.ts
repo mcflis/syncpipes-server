@@ -4,6 +4,7 @@ interface IObjectGraph {
     getName(): string;
     getParent(): IObjectGraph;
     toJSON(): Object;
+    getAbsolutePath(): string;
 }
 
 export class ObjectGraphNode implements IObjectGraph {
@@ -56,7 +57,7 @@ export class ObjectGraphNode implements IObjectGraph {
 
     private _getNodeByPrefix(prefix: string): Array<ObjectGraphNode> {
         // prefix is current node
-        if (prefix === this.name) {
+        if (ObjectGraphNode.sanitizePath(prefix) === ObjectGraphNode.sanitizePath(this.name)) {
             return [this];
         }
         // check if we need to check
@@ -70,12 +71,18 @@ export class ObjectGraphNode implements IObjectGraph {
                 // handle array nodes
                 if (child.getName().match(/^\[[0-9+]\]$/)) {
                     nodes = nodes.concat((<ObjectGraphNode>child).getNodeByPrefix(prefix));
-                } else if (current === child.getName()) {
+                } else if (ObjectGraphNode.sanitizePath(current) === ObjectGraphNode.sanitizePath(child.getName())) {
                     nodes = nodes.concat((<ObjectGraphNode>child).getNodeByPrefix(prefix.substr(idx+1)));
                 }
             }
         }
         return nodes;
+    }
+
+    private static sanitizePath(path: string): string {
+        if (path) {
+            return path.replace(/\[[0-9]*]$/, '');
+        }
     }
 
     getLeafByName(name: string): ObjectGraphLeaf {
@@ -115,11 +122,14 @@ export class ObjectGraphNode implements IObjectGraph {
                 if (obj.hasOwnProperty(key)) {
                     if (lodash.isArray(obj[key])) {
                         if (!this.isScalarArrayDeep(obj[key])) {
+                            let i = 0;
                             for (let item of obj[key]) {
-                                let node = new ObjectGraphNode(key, this);
+                                const nodeName = key === 'issues' ? key : `${key}[${i}]`;
+                                let node = new ObjectGraphNode(nodeName, this);
                                 // handle child elements
                                 node.insert(item);
                                 this.children.push(node);
+                                i++;
                             }
                         } else {
                             let node = new ObjectGraphLeaf(key, obj[key], this);
@@ -174,6 +184,13 @@ export class ObjectGraphNode implements IObjectGraph {
 
     };
 
+    getAbsolutePath(): string {
+        const parent = this.getParent();
+        if (parent) {
+            return `${parent.getAbsolutePath()}/${this.getName()}`
+        }
+        return this.getName();
+    }
 }
 
 export class ObjectGraphLeaf implements IObjectGraph {
@@ -210,4 +227,23 @@ export class ObjectGraphLeaf implements IObjectGraph {
         };
     }
 
+    getAbsolutePath(): string {
+        const parent = this.getParent();
+        if (parent) {
+            return `${parent.getAbsolutePath()}/${this.getName()}`
+        }
+        return this.getName();
+    }
+
+    resolveToPath(toPath: string) {
+        const matches = this.getAbsolutePath().match(/\[[0-9]+]/g);
+        if (!matches) {
+            return toPath;
+        }
+        const toPathTokens = toPath.split('[]').reverse();
+        const relevantMatches = matches.slice(matches.length - toPathTokens.length + 1, matches.length);
+        return toPathTokens.reduce((newPath, current) => {
+            return `${relevantMatches.pop() || ''}${current}${newPath}`
+        }, '');
+    }
 }
