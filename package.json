@@ -1,6 +1,6 @@
 {
   "name": "syncpipes-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Syncpipes RESTful backend",
   "main": "index.js",
   "author": "Fridolin Jakob Koch",
