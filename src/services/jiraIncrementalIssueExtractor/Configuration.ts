@@ -6,7 +6,6 @@ interface StoredConfiguration {
     url: string;
     username: string;
     password: string;
-    jiraHost: string;
     project: string;
     backoffInMs: number;
 }
@@ -17,12 +16,7 @@ export class Configuration implements IServiceConfiguration {
 
     private _username: string;
 
-    /**
-     * @deprecated
-     */
     private _password: string;
-
-    private _jiraHost: string;
 
     private _project: string;
 
@@ -42,16 +36,8 @@ export class Configuration implements IServiceConfiguration {
         return this._username;
     }
 
-    /**
-     * Password is not encrypted in database. Use {@link Configuration#jiraHost}
-     * @deprecated
-     */
     get password(): string {
         return this._password;
-    }
-
-    get jiraHost(): string {
-        return this._jiraHost;
     }
 
     get project(): string {
@@ -79,10 +65,6 @@ export class Configuration implements IServiceConfiguration {
                     "type": "string",
                     "description": "Jira password",
                 },
-                "jiraHost": {
-                    "type": "string",
-                    "description": "Target set in auth proxy",
-                },
                 "project": {
                     "type": "string",
                     "description": "Jira project",
@@ -105,17 +87,15 @@ export class Configuration implements IServiceConfiguration {
             "url": this._url,
             "username": this._username,
             "password": this._password,
-            "jiraHost": this._jiraHost,
             "project": this._project,
             "backoffInMs": this._backoffInMs
         };
     }
 
-    load({url, username, password, jiraHost, project, backoffInMs}: StoredConfiguration): void {
+    load({url, username, password, project, backoffInMs}: StoredConfiguration): void {
         this._url = url;
         this._username = username;
         this._password = password;
-        this._jiraHost = jiraHost;
         this._project = project;
         this._backoffInMs = backoffInMs;
     }

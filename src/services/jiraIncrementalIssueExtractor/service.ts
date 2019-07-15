@@ -93,7 +93,7 @@ export class JiraIncrementalIssueExtractor extends SyncPipes.BaseService impleme
             path_prefix: hostname ? pathname : null,
             basic_auth: {
                 username: this.config.username,
-                password: this.config.jiraHost || this.config.password
+                password: this.config.password
             }
         });
         this.getServiceBus().on(SyncPipes.getServiceBusEventName(SyncPipes.ServiceBusEvent.MostRecentlyUpdated), (jiraIssueUpdatedField: string) => {
