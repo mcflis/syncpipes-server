@@ -69,7 +69,7 @@ export class Configuration implements IServiceConfiguration {
             "properties": {
                 "url": {
                     "type": "string",
-                    "description": "Host"
+                    "description": "Jira Host or Auth Proxy Host (must be full WHATWG Url https://url.spec.whatwg.org/)"
                 },
                 "username": {
                     "type": "string",
@@ -96,8 +96,6 @@ export class Configuration implements IServiceConfiguration {
             "additionalProperties": false,
             "required": [
                 "url",
-                "username",
-                "project"
             ]
         });
     }
